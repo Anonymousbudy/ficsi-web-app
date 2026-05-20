@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-      <title>FICSI Assessment Suite | Search + Duplicate Block | Google Sync</title>
+      <title>FICSI Assessment Suite | Year‑wise Index | Google Sync</title>
       <script src="https://cdn.tailwindcss.com"></script>
       <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -39,7 +39,7 @@
                </div>
                <div>
                   <h2 class="text-xl font-bold text-slate-800">Batch Assessment Report</h2>
-                  <p class="text-xs text-slate-500">Search + Duplicate Block | Google Sheets Auto‑Sync</p>
+                  <p class="text-xs text-slate-500">Year‑wise Index | Search + Duplicate Block | Google Sheets Auto‑Sync</p>
                </div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
@@ -72,7 +72,7 @@
                <button onclick="applySearchFilter()" class="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-xl">Search</button>
                <button onclick="clearSearch()" class="px-3 py-1.5 border rounded-xl text-xs">Clear</button>
             </div>
-            <div class="text-xs text-slate-500">💡 Duplicate Batch IDs are blocked while adding/editing/importing.</div>
+            <div class="text-xs text-slate-500">💡 Index now shows only the selected year (or all years if "All Years" is active).</div>
          </div>
          <!-- Table wrapper -->
          <div class="overflow-x-auto custom-scrollbar relative" style="max-height: 70vh;">
@@ -98,8 +98,8 @@
             </table>
          </div>
          <div class="p-3 bg-slate-50 text-[10px] text-slate-400 border-t flex justify-between">
-            <span>⚡ Absent = Total - Present | Remark appears below Yes/No status</span>
-            <span>🔁 Duplicate Batch IDs are prevented automatically</span>
+            <span>⚡ Absent = Total - Present | Remark below status</span>
+            <span>📌 Index: select a year → click Index → shows only that year's index</span>
          </div>
       </div>
 
@@ -125,10 +125,13 @@
          </div>
       </div>
 
-      <!-- INDEX MODAL -->
+      <!-- INDEX MODAL - now shows only selected year -->
       <div id="indexModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm items-center justify-center z-50 p-4 hidden" style="visibility: hidden; opacity: 0;">
          <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[85vh] flex flex-col">
-            <div class="p-5 border-b flex justify-between"><h3 class="text-xl font-bold">📑 Annexure 4 – Index Sheet</h3><button onclick="closeIndexModal()">✕</button></div>
+            <div class="p-5 border-b flex justify-between">
+               <h3 class="text-xl font-bold">📑 Annexure 4 – Index Sheet <span id="indexYearLabel" class="text-sm font-normal text-slate-500"></span></h3>
+               <button onclick="closeIndexModal()">✕</button>
+            </div>
             <div class="p-5 overflow-y-auto flex-1" id="indexContent"></div>
             <div class="p-4 border-t flex justify-end gap-3"><button onclick="exportIndexToExcel()" class="bg-green-600 text-white px-4 py-2 rounded-xl">Export XLSX</button><button onclick="exportIndexToPDF()" class="bg-red-600 text-white px-4 py-2 rounded-xl">Export PDF</button></div>
          </div>
@@ -375,6 +378,115 @@ function clearSearch() {
    renderTable();
 }
 
+// ---------- INDEX: generate only for selected year (or all if "all") ----------
+function generateIndexData(forceYear = null) {
+   let targetYear = forceYear !== null ? forceYear : currentFilterYear;
+   let batches = assessments;
+   if (targetYear !== "all") {
+      batches = assessments.filter(e => extractYearFromISO(e.assessmentDateISO) === targetYear);
+   }
+   if (batches.length === 0) return [];
+   // Group by year (if all years, group; if single year, only one group)
+   let map = new Map();
+   batches.forEach(e => {
+      let y = extractYearFromISO(e.assessmentDateISO);
+      if (!map.has(y)) map.set(y, []);
+      map.get(y).push(e);
+   });
+   let result = [];
+   for (let [y, yrBatches] of map.entries()) {
+      let page = 1;
+      let entries = yrBatches.map((b, i) => ({
+         sr: i + 1,
+         batchId: b.batchId,
+         date: formatDisplayDate(b.assessmentDateISO),
+         fileName: `${y}-${String(i+1).padStart(2,'0')}`,
+         pageRange: `${page}-${page+52}`
+      }));
+      page += 53;
+      result.push({ year: y, entries });
+   }
+   return result;
+}
+
+function showIndexModal() {
+   let idxDiv = document.getElementById('indexContent');
+   let yearLabelSpan = document.getElementById('indexYearLabel');
+   let selectedYear = currentFilterYear; // respect current filter
+   let idxData = generateIndexData(selectedYear);
+   let html = '';
+   if (idxData.length === 0) {
+      html = '<div class="text-center py-10 text-slate-400">No batches found for the selected year.</div>';
+      yearLabelSpan.innerText = selectedYear !== "all" ? `(Year: ${selectedYear})` : "(All Years)";
+   } else {
+      let yearDisplay = selectedYear !== "all" ? selectedYear : "All Years";
+      yearLabelSpan.innerText = `(Year: ${yearDisplay})`;
+      for (let group of idxData) {
+         html += `<div class="mb-6"><div class="bg-slate-100 p-2 font-bold">Assessment Year ${group.year}</div>
+         <table class="w-full text-sm border"><thead><tr><th class="border p-1">Sr. No.</th><th class="border p-1">Batch id</th><th class="border p-1">Date of Assessment</th><th class="border p-1">Pocket No. (File name)</th><th class="border p-1">Page Number range</th></tr></thead><tbody>`;
+         group.entries.forEach(e => {
+            html += `<tr><td class="border p-1 text-center">${e.sr}</td><td class="border p-1">${e.batchId}</td><td class="border p-1">${e.date}</td><td class="border p-1">${e.fileName}</td><td class="border p-1">${e.pageRange}</td></tr>`;
+         });
+         html += `</tbody></table></div>`;
+      }
+   }
+   idxDiv.innerHTML = html;
+   document.getElementById('indexModal').classList.remove('hidden');
+   setTimeout(() => {
+      document.getElementById('indexModal').style.visibility = 'visible';
+      document.getElementById('indexModal').style.opacity = '1';
+   }, 10);
+}
+
+function closeIndexModal() {
+   let m = document.getElementById('indexModal');
+   m.style.visibility = 'hidden';
+   m.style.opacity = '0';
+   setTimeout(() => m.classList.add('hidden'), 200);
+}
+
+function exportIndexToExcel() {
+   let selectedYear = currentFilterYear;
+   let idxData = generateIndexData(selectedYear);
+   let rows = [];
+   for (let group of idxData) {
+      for (let e of group.entries) {
+         rows.push({
+            Year: group.year,
+            'Sr. No.': e.sr,
+            'Batch id': e.batchId,
+            'Date of Assessment': e.date,
+            'Pocket No. (File name)': e.fileName,
+            'Page Number range': e.pageRange
+         });
+      }
+   }
+   let ws = XLSX.utils.json_to_sheet(rows);
+   let wb = XLSX.utils.book_new();
+   XLSX.utils.book_append_sheet(wb, ws, "Annexure_4");
+   XLSX.writeFile(wb, `Annexure_4_${selectedYear !== "all" ? selectedYear : "AllYears"}_${Date.now()}.xlsx`);
+}
+
+async function exportIndexToPDF() {
+   let { jsPDF } = window.jspdf;
+   let doc = new jsPDF({ orientation: 'landscape' });
+   let selectedYear = currentFilterYear;
+   let idxData = generateIndexData(selectedYear);
+   let body = [];
+   for (let group of idxData) {
+      for (let e of group.entries) {
+         body.push([e.sr, e.batchId, e.date, e.fileName, e.pageRange]);
+      }
+   }
+   doc.autoTable({
+      head: [['Sr. No.', 'Batch id', 'Date of Assessment', 'Pocket No. (File name)', 'Page Range']],
+      body: body,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [41, 128, 185] }
+   });
+   doc.save(`Annexure_4_${selectedYear !== "all" ? selectedYear : "AllYears"}.pdf`);
+}
+
 // Modal with remark inputs
 function buildModalRadios(defaultStatusMap = null) {
    let container = document.getElementById('statusInputsContainer');
@@ -449,17 +561,17 @@ function saveBatchFromModal() {
    let total = parseInt(document.getElementById('totalCandidates').value);
    let present = parseInt(document.getElementById('presentCandidates').value);
    if (!batchId || !dateRaw) {
-      alert("Batch ID & Date required");
+      showToast("Batch ID & Date required");
       return false;
    }
    if (present > total) {
-      alert("Present cannot exceed total");
+      showToast("Present cannot exceed total");
       return false;
    }
    const editIdx = parseInt(document.getElementById('editIndex').value);
    // Duplicate check
    if (isDuplicateBatchId(batchId, editIdx)) {
-      alert("❌ Duplicate Batch ID! This Batch ID already exists. Please use a unique ID.");
+      showToast("❌ Duplicate Batch ID! This Batch ID already exists. Please use a unique ID.");
       return false;
    }
    const statusMap = getStatusFromModal();
@@ -636,90 +748,6 @@ async function exportToPDF() {
    doc.save('report.pdf');
 }
 
-function generateIndexData() {
-   let map = new Map();
-   assessments.forEach(e => {
-      let y = extractYearFromISO(e.assessmentDateISO);
-      if (!map.has(y)) map.set(y, []);
-      map.get(y).push(e);
-   });
-   let result = [];
-   for (let [y, batches] of map) {
-      let page = 1;
-      let entries = batches.map((b, i) => ({
-         sr: i + 1,
-         batchId: b.batchId,
-         date: formatDisplayDate(b.assessmentDateISO),
-         fileName: `${y}-${String(i+1).padStart(2,'0')}`,
-         pageRange: `${page}-${page+52}`
-      }));
-      page += 53;
-      result.push({
-         year: y,
-         entries
-      });
-   }
-   return result;
-}
-
-function showIndexModal() {
-   let idxDiv = document.getElementById('indexContent');
-   let idxData = generateIndexData();
-   let html = '';
-   if (idxData.length === 0) html = '<div class="text-center py-10">No data</div>';
-   else idxData.forEach(g => {
-      html += `<div class="mb-6"><div class="bg-slate-100 p-2 font-bold">Year ${g.year}</div><table class="w-full text-sm border"><thead><tr><th class="border p-1">Sr</th><th>Batch ID</th><th>Date</th><th>File name</th><th>Page range</th></tr></thead><tbody>`;
-      g.entries.forEach(e => {
-         html += `<tr><td class="border p-1">${e.sr}</td><td>${e.batchId}</td><td>${e.date}</td><td>${e.fileName}</td><td>${e.pageRange}</td></tr>`;
-      });
-      html += `</tbody></table></div>`;
-   });
-   idxDiv.innerHTML = html;
-   document.getElementById('indexModal').classList.remove('hidden');
-   setTimeout(() => {
-      document.getElementById('indexModal').style.visibility = 'visible';
-      document.getElementById('indexModal').style.opacity = '1';
-   }, 10);
-}
-
-function closeIndexModal() {
-   let m = document.getElementById('indexModal');
-   m.style.visibility = 'hidden';
-   m.style.opacity = '0';
-   setTimeout(() => m.classList.add('hidden'), 200);
-}
-
-function exportIndexToExcel() {
-   let idxData = generateIndexData();
-   let rows = [];
-   idxData.forEach(g => g.entries.forEach(e => rows.push({
-      Year: g.year,
-      ...e
-   })));
-   let ws = XLSX.utils.json_to_sheet(rows);
-   let wb = XLSX.utils.book_new();
-   XLSX.utils.book_append_sheet(wb, ws, "Index");
-   XLSX.writeFile(wb, `index_${Date.now()}.xlsx`);
-}
-async function exportIndexToPDF() {
-   let {
-      jsPDF
-   } = window.jspdf;
-   let doc = new jsPDF({
-      orientation: 'landscape'
-   });
-   let idxData = generateIndexData();
-   let body = [];
-   idxData.forEach(g => g.entries.forEach(e => body.push([e.sr, e.batchId, e.date, e.fileName, e.pageRange])));
-   doc.autoTable({
-      head: [
-         ['Sr', 'Batch ID', 'Date', 'File name', 'Page Range']
-      ],
-      body
-   });
-   doc.save('index.pdf');
-}
-
 // Google Sheets functions (unchanged)
 function showClientIdModal() {
    let m = document.getElementById('clientIdModal');
@@ -740,7 +768,7 @@ function closeClientIdModal() {
 function saveClientIdAndProceed() {
    let newClientId = document.getElementById('clientIdInput').value.trim();
    if (!newClientId) {
-      alert("Enter Client ID");
+      showToast("Enter Client ID");
       return;
    }
    localStorage.setItem("ficsi_google_client_id", newClientId);
@@ -756,75 +784,63 @@ function showSyncStatus(show, msg) {
       document.getElementById('syncStatusMsg').innerText = msg || "Connected.";
    } else bar.classList.add('hidden');
 }
-async function authenticateAndCreateSheet() {
+async function authenticateGoogle() {
    if (!clientId) {
       showClientIdModal();
       return;
    }
    let tc = google.accounts.oauth2.initTokenClient({
       client_id: clientId,
-      scope: "https://www.googleapis.com/auth/spreadsheets",
+      scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
       callback: async (resp) => {
          if (resp.error) {
-            alert("Auth error: " + resp.error);
+            showToast("Auth error: " + resp.error);
             return;
          }
          accessToken = resp.access_token;
-         localStorage.setItem("ficsi_gs_token", accessToken);
          await loadFromGoogleSheet();
+		 await syncToGoogleSheet();
       }
    });
    tc.requestAccessToken({
-      prompt: 'consent'
+      prompt: 'select_account'
    });
 }
-async function createNewSpreadsheet() {
-   try {
-      let resp = await fetch('https://sheets.googleapis.com/v4/spreadsheets', {
-         method: 'POST',
-         headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json'
-         },
-         body: JSON.stringify({
-            properties: {
-               title: "FICSI Assessment with Remarks"
-            }
-         })
-      });
-      let data = await resp.json();
-      if (data.spreadsheetId) {
-         spreadsheetId = data.spreadsheetId;
-         isGoogleReady = true;
-         showSyncStatus(true, "✅ Sheet created");
-         await syncToGoogleSheet();
-      } else alert("Failed: " + JSON.stringify(data));
-   } catch (e) {
-      alert("Error: " + e.message);
-   }
-}
+
 async function authenticateAndSyncExisting() {
+
    if (!clientId) {
       showClientIdModal();
       return;
    }
+
    let tc = google.accounts.oauth2.initTokenClient({
+
       client_id: clientId,
-      scope: "https://www.googleapis.com/auth/spreadsheets",
+
+      scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
+
       callback: async (resp) => {
+
          if (resp.error) {
-            alert("Auth error");
+            showToast("❌ Auth error");
             return;
          }
+
          accessToken = resp.access_token;
-         localStorage.setItem("ficsi_gs_token", accessToken);
+
          isGoogleReady = true;
-         showSyncStatus(true, "Loading...");
+
+         showSyncStatus(true, "Connected.");
+
          await loadFromGoogleSheet();
+
+         await syncToGoogleSheet();
       }
    });
+
    tc.requestAccessToken({
-      prompt: 'consent'
+      prompt: 'select_account'
    });
 }
 async function syncToGoogleSheet() {
@@ -909,7 +925,6 @@ async function loadFromGoogleSheet() {
 }
 
 function disconnectGoogleSheet() {
-   localStorage.removeItem("ficsi_gs_token");
    accessToken = null;
    isGoogleReady = false;
    showSyncStatus(false, "");
@@ -920,11 +935,12 @@ async function initGoogleSync() {
       if (accessToken) {
          showSyncStatus(true, "Already connected.");
          await loadFromGoogleSheet();
+		 await syncToGoogleSheet();
       } else {
          await authenticateAndSyncExisting();
       }
    } else {
-      await authenticateAndCreateSheet();
+      await authenticateGoogle();
    }
 }
 
@@ -933,14 +949,8 @@ function dataChanged() {
    if (isGoogleReady && spreadsheetId && accessToken) syncToGoogleSheet();
 }
 
-window.onload = () => {
+   window.onload = () => {
    renderTable();
-   if (spreadsheetId && localStorage.getItem("ficsi_gs_token")) {
-      accessToken = localStorage.getItem("ficsi_gs_token");
-      isGoogleReady = true;
-      showSyncStatus(true, "Auto-reconnected...");
-      loadFromGoogleSheet().catch(() => showToast("Re-authenticate"));
-   }
 };
 window.initGoogleSync = initGoogleSync;
 window.disconnectGoogleSheet = disconnectGoogleSheet;
