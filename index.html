@@ -321,10 +321,20 @@ function renderTable() {
          let val = entry.statusMap[doc.id] || "No";
          let remark = entry.statusMap[doc.id + "_remark"] || "";
          let color = val === "Yes" ? "text-emerald-600" : "text-rose-600";
-         statusCells += `<td class="p-3 border-r border-slate-200 doc-cell">
-                    <div class="status-badge ${color}">${val}</div>
-                    ${remark ? `<div class="remark-text">📝 ${escapeHtml(remark)}</div>` : '<div class="remark-text text-slate-300">—</div>'}
-                </td>`;
+         statusCells += `
+         <td class="p-3 border-r border-slate-200 text-center align-middle">
+             <div class="flex flex-col items-center justify-center min-h-[60px]">
+                 <div class="status-badge ${color}">
+                     ${val}
+                 </div>
+         
+                 ${
+                     remark
+                     ? `<div class="remark-text text-center">📝 ${escapeHtml(remark)}</div>`
+                     : `<div class="remark-text text-slate-300 text-center">—</div>`
+                 }
+             </div>
+         </td>`;
       }
       const row = document.createElement('tr');
       row.className = "hover:bg-blue-50/40 border-b";
