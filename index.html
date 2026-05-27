@@ -337,12 +337,30 @@
             const selected = [...document.querySelectorAll('.batchSelect:checked')]
                .map(cb => cb.value);
          
-            return assessments.filter(a =>
-         
+            return assessments
+            .filter(a =>
+
                extractYearFromISO(a.assessmentDateISO) === year &&
                selected.includes(a.batchId)
-         
-            );
+            
+            )
+            .map((a, index) => {
+
+               // AUTO CREATE pocketNo IF MISSING
+
+               if(!a.pocketNo) {
+
+                  const yr =
+                  extractYearFromISO(a.assessmentDateISO);
+            
+                  a.pocketNo =
+                  `${yr}-${String(index + 1).padStart(2,'0')}`;
+
+               }
+
+               return a;
+
+            });
          
          }
          
