@@ -48,8 +48,9 @@
                <button onclick="document.getElementById('excelInput').click()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs rounded-xl">📂 Import Excel</button>
                <input type="file" id="excelInput" accept=".xlsx, .xls, .csv" style="display:none" onchange="handleExcelImport(event)">
                <button onclick="exportToExcel()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-xl">📎 Export XLSX</button>
-               <button onclick="exportToPDF()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs rounded-xl">📑 Export PDF</button>
-               <button onclick="showIndexModal()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-xl">📇 Index</button>
+               <button onclick="exportToPDF()" class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs rounded-xl">📑 Export PDF</button><button onclick="openReportGenerator()" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs rounded-xl">
+               📇 Generate Report
+               </button>
                <button onclick="openAddModal()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-xl">+ Add Batch</button>
             </div>
          </div>
@@ -62,7 +63,9 @@
          <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-4 sticky top-[73px] z-20">
             <div class="flex items-center gap-2">
                <span class="text-xs font-semibold">📅 Filter by Year:</span>
-               <select id="yearFilter" class="px-3 py-1.5 border rounded-xl text-sm bg-white"><option value="all">All Years</option></select>
+               <select id="yearFilter" class="px-3 py-1.5 border rounded-xl text-sm bg-white">
+                  <option value="all">All Years</option>
+               </select>
                <button onclick="applyYearFilter()" class="px-3 py-1.5 bg-slate-800 text-white text-xs rounded-xl">Apply</button>
                <button onclick="clearFilter()" class="px-3 py-1.5 border rounded-xl text-xs">Reset</button>
             </div>
@@ -79,16 +82,27 @@
             <table class="min-w-[3200px] w-full text-sm border-collapse">
                <thead class="sticky-header">
                   <tr class="bg-slate-100 text-slate-700 font-bold text-[11px] uppercase tracking-wider border-b-2 border-slate-300">
-                     <th class="p-3 border-r w-12">S.No</th><th class="p-3 border-r">Batch ID</th><th class="p-3 border-r">Candidates</th><th class="p-3 border-r">Present</th>
-                     <th class="p-3 border-r">Absent</th><th class="p-3 border-r min-w-[130px]">Assessment Date</th>
+                     <th class="p-3 border-r w-12">S.No</th>
+                     <th class="p-3 border-r">Batch ID</th>
+                     <th class="p-3 border-r">Candidates</th>
+                     <th class="p-3 border-r">Present</th>
+                     <th class="p-3 border-r">Absent</th>
+                     <th class="p-3 border-r min-w-[130px]">Assessment Date</th>
                      <!-- 14 doc columns: each with Status + Remark -->
-                     <th class="p-3 border-r min-w-[140px]">Attendance Sheet</th><th class="p-3 border-r min-w-[140px]">Annexure M</th>
-                     <th class="p-3 border-r min-w-[140px]">Assessor Declaration</th><th class="p-3 border-r min-w-[140px]">Declaration Form</th>
-                     <th class="p-3 border-r min-w-[140px]">Checklist by Assessor</th><th class="p-3 border-r min-w-[140px]">Feedback VTP</th>
-                     <th class="p-3 border-r min-w-[140px]">TP Declaration</th><th class="p-3 border-r min-w-[140px]">TP-TC Declaration</th>
-                     <th class="p-3 border-r min-w-[140px]">Training feedback</th><th class="p-3 border-r min-w-[140px]">Candidate Feedback</th>
-                     <th class="p-3 border-r min-w-[140px]">Placement Sheet</th><th class="p-3 border-r min-w-[140px]">Training Attendance</th>
-                     <th class="p-3 border-r min-w-[140px]">Enrollment Form</th><th class="p-3 border-r min-w-[140px]">Annexure N</th>
+                     <th class="p-3 border-r min-w-[140px]">Attendance Sheet</th>
+                     <th class="p-3 border-r min-w-[140px]">Annexure M</th>
+                     <th class="p-3 border-r min-w-[140px]">Assessor Declaration</th>
+                     <th class="p-3 border-r min-w-[140px]">Declaration Form</th>
+                     <th class="p-3 border-r min-w-[140px]">Checklist by Assessor</th>
+                     <th class="p-3 border-r min-w-[140px]">Feedback VTP</th>
+                     <th class="p-3 border-r min-w-[140px]">TP Declaration</th>
+                     <th class="p-3 border-r min-w-[140px]">TP-TC Declaration</th>
+                     <th class="p-3 border-r min-w-[140px]">Training feedback</th>
+                     <th class="p-3 border-r min-w-[140px]">Candidate Feedback</th>
+                     <th class="p-3 border-r min-w-[140px]">Placement Sheet</th>
+                     <th class="p-3 border-r min-w-[140px]">Training Attendance</th>
+                     <th class="p-3 border-r min-w-[140px]">Enrollment Form</th>
+                     <th class="p-3 border-r min-w-[140px]">Annexure N</th>
                      <th class="p-3 border-r min-w-[180px]">Outher (Extra Docs ✓)</th>
                      <th class="p-3 border-r min-w-[200px]">Missing Documents ✗</th>
                      <th class="p-3 min-w-[100px] sticky-action-col bg-slate-100">Actions</th>
@@ -102,11 +116,13 @@
             <span>📌 Index: select a year → click Index → shows only that year's index</span>
          </div>
       </div>
-
       <!-- MODAL: Add / Edit Batch with remark boxes -->
       <div id="entryModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden" style="visibility: hidden; opacity: 0;">
          <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col">
-            <div class="p-5 border-b flex justify-between"><h3 class="text-lg font-bold" id="modalTitle">➕ Batch Assessment</h3><button onclick="closeModal()">✕</button></div>
+            <div class="p-5 border-b flex justify-between">
+               <h3 class="text-lg font-bold" id="modalTitle">➕ Batch Assessment</h3>
+               <button onclick="closeModal()">✕</button>
+            </div>
             <form id="entryForm" class="p-6 space-y-6 overflow-y-auto">
                <input type="hidden" id="editIndex" value="-1">
                <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
@@ -124,7 +140,6 @@
             </form>
          </div>
       </div>
-
       <!-- INDEX MODAL - now shows only selected year -->
       <div id="indexModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm items-center justify-center z-50 p-4 hidden" style="visibility: hidden; opacity: 0;">
          <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[85vh] flex flex-col">
@@ -136,7 +151,6 @@
             <div class="p-4 border-t flex justify-end gap-3"><button onclick="exportIndexToExcel()" class="bg-green-600 text-white px-4 py-2 rounded-xl">Export XLSX</button><button onclick="exportIndexToPDF()" class="bg-red-600 text-white px-4 py-2 rounded-xl">Export PDF</button></div>
          </div>
       </div>
-
       <!-- Client ID Modal -->
       <div id="clientIdModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden" style="visibility: hidden; opacity: 0;">
          <div class="bg-white rounded-2xl max-w-md w-full p-6">
@@ -146,894 +160,1773 @@
             <div class="flex justify-end gap-2"><button onclick="closeClientIdModal()" class="border px-3 py-1 rounded-lg">Cancel</button><button onclick="saveClientIdAndProceed()" class="bg-green-600 text-white px-3 py-1 rounded-lg">Save & Connect</button></div>
          </div>
       </div>
-
-<script>
-    // ---------- DOCS LIST (with remark field) ----------
-const ALL_DOCS = [{
-      id: "attendanceSheet",
-      label: "Attendance Sheet",
-      group: "mandatory"
-   },
-   {
-      id: "annexureM",
-      label: "Annexure M",
-      group: "mandatory"
-   },
-   {
-      id: "assessorDeclaration",
-      label: "Assessor Declaration",
-      group: "mandatory"
-   },
-   {
-      id: "declarationForm",
-      label: "Declaration Form",
-      group: "mandatory"
-   },
-   {
-      id: "checklistAssessor",
-      label: "Checklist by Assessor",
-      group: "mandatory"
-   },
-   {
-      id: "vtpFeedback",
-      label: "Feedback Form for VTP",
-      group: "mandatory"
-   },
-   {
-      id: "tpDeclaration",
-      label: "TP Declaration form",
-      group: "mandatory"
-   },
-   {
-      id: "tptcDeclaration",
-      label: "TP-TC Declaration Form",
-      group: "mandatory"
-   },
-   {
-      id: "trainingFeedback",
-      label: "Training feedback form by Assessor",
-      group: "mandatory"
-   },
-   {
-      id: "candidateFeedback",
-      label: "Candidate Feedback",
-      group: "mandatory"
-   },
-   {
-      id: "placementSheet",
-      label: "Placement Sheet",
-      group: "extra"
-   },
-   {
-      id: "trainingAttendanceSheet",
-      label: "Training Attendance Sheet",
-      group: "extra"
-   },
-   {
-      id: "enrollmentForm",
-      label: "Candidate Enrollment Form",
-      group: "extra"
-   },
-   {
-      id: "annexureN",
-      label: "Annexure N",
-      group: "extra"
-   }
-];
-let assessments = [];
-let currentFilterYear = "all";
-let currentSearchTerm = "";
-// Google vars
-let accessToken = null,
-    spreadsheetId = "1FtvIj-PrGYoumdJfqXJSvibdMirw3ZloNTBciHMlYBc",
-    clientId = localStorage.getItem("ficsi_google_client_id");
-let isGoogleReady = false;
-
-// helpers
-function parseExcelDate(v) {
-   if (typeof v === 'number') {
-      let d = new Date((v - 25569) * 86400000);
-      if (!isNaN(d)) return d;
-   }
-   if (v instanceof Date && !isNaN(v)) return v;
-   if (typeof v === 'string') {
-      let d = new Date(v);
-      if (!isNaN(d)) return d;
-   }
-   return null;
-}
-
-function toISODate(di) {
-   if (!di) return "";
-   if (typeof di === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(di)) return di;
-   let d = parseExcelDate(di);
-   return d && !isNaN(d) ? d.toISOString().slice(0, 10) : "";
-}
-
-function formatDisplayDate(iso) {
-   if (!iso) return "";
-   let d = new Date(iso);
-   return isNaN(d) ? iso : d.toLocaleDateString('en-GB', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-   });
-}
-
-function extractYearFromISO(iso) {
-   return iso ? iso.split('-')[0] : "2023";
-}
-
-function computeOutherList(sm) {
-   return ALL_DOCS.filter(d => d.group === "extra" && sm[d.id] === "Yes").map(d => d.label);
-}
-
-function computeMissingList(sm) {
-   return ALL_DOCS.filter(d => d.group === "mandatory" && sm[d.id] === "No").map(d => d.label);
-}
-
-function formatNumberedList(list) {
-   if (!list.length) return '<span class="text-slate-400 italic">— None —</span>';
-   return `<ol class="numbered-list">${list.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ol>`;
-}
-
-function escapeHtml(str) {
-   return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-}
-
-function showToast(msg) {
-   let t = document.createElement('div');
-   t.innerText = msg;
-   t.className = 'fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-2 rounded-xl shadow-lg z-50 text-sm';
-   document.body.appendChild(t);
-   setTimeout(() => t.remove(), 2500);
-}
-
-// ---------- Duplicate check ----------
-function isDuplicateBatchId(batchId, excludeIndex = -1) {
-   return assessments.some((item, idx) => idx !== excludeIndex && item.batchId.toLowerCase() === batchId.toLowerCase());
-}
-
-// ---------- Filtering: Year + Search ----------
-function getFilteredAssessments() {
-   let filtered = assessments;
-   if (currentFilterYear !== "all") {
-      filtered = filtered.filter(e => extractYearFromISO(e.assessmentDateISO) === currentFilterYear);
-   }
-   if (currentSearchTerm.trim() !== "") {
-      const term = currentSearchTerm.trim().toLowerCase();
-      filtered = filtered.filter(e => e.batchId.toLowerCase().includes(term));
-   }
-   return filtered;
-}
-
-function renderTable() {
-   const tbody = document.getElementById('tableBody');
-   tbody.innerHTML = '';
-   const filtered = getFilteredAssessments();
-   filtered.forEach((entry, idx) => {
-      const originalIndex = assessments.findIndex(a => a === entry);
-      const absent = entry.totalCandidates - entry.presentCandidates;
-      const outherList = computeOutherList(entry.statusMap);
-      const missingList = computeMissingList(entry.statusMap);
-      let statusCells = '';
-      for (let doc of ALL_DOCS) {
-         let val = entry.statusMap[doc.id] || "No";
-         let remark = entry.statusMap[doc.id + "_remark"] || "";
-         let color = val === "Yes" ? "text-emerald-600" : "text-rose-600";
-         statusCells += `
-         <td class="p-3 border-r border-slate-200 text-center align-middle">
-             <div class="flex flex-col items-center justify-center min-h-[60px]">
-                 <div class="status-badge ${color}">
-                     ${val}
-                 </div>
+      <script>
+         // =====================================
+         // REPORT GENERATOR
+         // =====================================
          
-                 ${
-                     remark
-                     ? `<div class="remark-text text-center">📝 ${escapeHtml(remark)}</div>`
-                     : `<div class="remark-text text-slate-300 text-center">—</div>`
-                 }
-             </div>
-         </td>`;
-      }
-      const row = document.createElement('tr');
-      row.className = "hover:bg-blue-50/40 border-b";
-      row.innerHTML = `<td class="p-3 border-r text-center">${idx+1}</td>
-                <td class="p-3 border-r font-semibold text-blue-700 text-center">${escapeHtml(entry.batchId)}</td>
-                <td class="p-3 border-r text-center">${entry.totalCandidates}</td>
-                <td class="p-3 border-r text-center">${entry.presentCandidates}</td>
-                <td class="p-3 border-r text-center font-bold text-rose-600">${absent}</td>
-                <td class="p-3 border-r text-center">${formatDisplayDate(entry.assessmentDateISO)}</td>
-                ${statusCells}
-                <td class="p-3 border-r align-top text-center">${formatNumberedList(outherList)}</td>
-                <td class="p-3 border-r align-top text-center">${formatNumberedList(missingList)}</td>
-                <td class="p-3 text-center whitespace-nowrap sticky-action-td">
-                    <button onclick="editBatch(${originalIndex})" class="action-btn px-2 py-1 bg-amber-500 text-white text-[11px] rounded-lg mr-1">✏️ Edit</button>
-                    <button onclick="deleteBatch(${originalIndex})" class="action-btn px-2 py-1 bg-rose-500 text-white text-[11px] rounded-lg">🗑️ Del</button>
-                </td>`;
-      tbody.appendChild(row);
-   });
-   if (filtered.length === 0) tbody.innerHTML = '<tr><td colspan="23" class="text-center py-10 text-slate-400">No matching batches. Add or import.</td></tr>';
-   updateYearFilterDropdown();
-}
-
-function updateYearFilterDropdown() {
-   let years = [...new Set(assessments.map(a => extractYearFromISO(a.assessmentDateISO)))].sort();
-   let sel = document.getElementById('yearFilter');
-   let curr = sel.value;
-   sel.innerHTML = '<option value="all">All Years</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
-   if (curr !== "all" && years.includes(curr)) sel.value = curr;
-   else sel.value = "all";
-}
-
-function applyYearFilter() {
-   currentFilterYear = document.getElementById('yearFilter').value;
-   renderTable();
-}
-
-function clearFilter() {
-   currentFilterYear = "all";
-   document.getElementById('yearFilter').value = "all";
-   renderTable();
-}
-
-function applySearchFilter() {
-   currentSearchTerm = document.getElementById('searchBatchInput').value;
-   renderTable();
-}
-
-function clearSearch() {
-   document.getElementById('searchBatchInput').value = "";
-   currentSearchTerm = "";
-   renderTable();
-}
-
-// ---------- INDEX: generate only for selected year (or all if "all") ----------
-function generateIndexData(forceYear = null) {
-   let targetYear = forceYear !== null ? forceYear : currentFilterYear;
-   let batches = assessments;
-   if (targetYear !== "all") {
-      batches = assessments.filter(e => extractYearFromISO(e.assessmentDateISO) === targetYear);
-   }
-   if (batches.length === 0) return [];
-   // Group by year (if all years, group; if single year, only one group)
-   let map = new Map();
-   batches.forEach(e => {
-      let y = extractYearFromISO(e.assessmentDateISO);
-      if (!map.has(y)) map.set(y, []);
-      map.get(y).push(e);
-   });
-   let result = [];
-   for (let [y, yrBatches] of map.entries()) {
-      let page = 1;
-      let entries = yrBatches.map((b, i) => ({
-         sr: i + 1,
-         batchId: b.batchId,
-         date: formatDisplayDate(b.assessmentDateISO),
-         fileName: `${y}-${String(i+1).padStart(2,'0')}`,
-         pageRange: `${page}-${page+52}`
-      }));
-      page += 53;
-      result.push({ year: y, entries });
-   }
-   return result;
-}
-
-function showIndexModal() {
-   let idxDiv = document.getElementById('indexContent');
-   let yearLabelSpan = document.getElementById('indexYearLabel');
-   let selectedYear = currentFilterYear; // respect current filter
-   let idxData = generateIndexData(selectedYear);
-   let html = '';
-   if (idxData.length === 0) {
-      html = '<div class="text-center py-10 text-slate-400">No batches found for the selected year.</div>';
-      yearLabelSpan.innerText = selectedYear !== "all" ? `(Year: ${selectedYear})` : "(All Years)";
-   } else {
-      let yearDisplay = selectedYear !== "all" ? selectedYear : "All Years";
-      yearLabelSpan.innerText = `(Year: ${yearDisplay})`;
-      for (let group of idxData) {
-         html += `<div class="mb-6"><div class="bg-slate-100 p-2 font-bold">Assessment Year ${group.year}</div>
-         <table class="w-full text-sm border">
-		     <thead>
-			   <tr>
-			     <th class="border p-1">Sr. No.</th>
-				 <th class="border p-1">Batch id</th>
-				 <th class="border p-1">Date of Assessment</th>
-				 <th class="border p-1">Pocket No.</th>
-			   </tr>
-			 </thead>
-		 <tbody>`;
-         group.entries.forEach(e => {
-            html += `<tr>
-			           <td class="border p-1 text-center">${e.sr}</td>
-					   <td class="border p-1 text-center">${e.batchId}</td>
-					   <td class="border p-1 text-center">${e.date}</td>
-					   <td class="border p-1 text-center">${e.fileName}</td>
-					 </tr>`;
-         });
-         html += `</tbody></table></div>`;
-      }
-   }
-   idxDiv.innerHTML = html;
-   document.getElementById('indexModal').classList.remove('hidden');
-   setTimeout(() => {
-      document.getElementById('indexModal').style.visibility = 'visible';
-      document.getElementById('indexModal').style.opacity = '1';
-   }, 10);
-}
-
-function closeIndexModal() {
-   let m = document.getElementById('indexModal');
-   m.style.visibility = 'hidden';
-   m.style.opacity = '0';
-   setTimeout(() => m.classList.add('hidden'), 200);
-}
-
-function exportIndexToExcel() {
-   let selectedYear = currentFilterYear;
-   let idxData = generateIndexData(selectedYear);
-   let rows = [];
-   for (let group of idxData) {
-      for (let e of group.entries) {
-         rows.push({
-            Year: group.year,
-            'Sr. No.': e.sr,
-            'Batch id': e.batchId,
-            'Date of Assessment': e.date,
-            'Pocket No. (File name)': e.fileName,
-         });
-      }
-   }
-   let ws = XLSX.utils.json_to_sheet(rows);
-   let wb = XLSX.utils.book_new();
-   XLSX.utils.book_append_sheet(wb, ws, "Annexure_4");
-   XLSX.writeFile(wb, `Annexure_4_${selectedYear !== "all" ? selectedYear : "AllYears"}_${Date.now()}.xlsx`);
-}
-
-async function exportIndexToPDF() {
-   let { jsPDF } = window.jspdf;
-   let doc = new jsPDF({ orientation: 'landscape' });
-   let selectedYear = currentFilterYear;
-   let idxData = generateIndexData(selectedYear);
-   let body = [];
-   for (let group of idxData) {
-      for (let e of group.entries) {
-         body.push([e.sr, e.batchId, e.date, e.fileName]);
-      }
-   }
-   doc.autoTable({
-      head: [['Sr. No.', 'Batch id', 'Date of Assessment', 'Pocket No. (File name)', 'Page Range']],
-      body: body,
-      styles: { fontSize: 9 },
-      headStyles: { fillColor: [41, 128, 185] }
-   });
-   doc.save(`Annexure_4_${selectedYear !== "all" ? selectedYear : "AllYears"}.pdf`);
-}
-
-// Modal with remark inputs
-function buildModalRadios(defaultStatusMap = null) {
-   let container = document.getElementById('statusInputsContainer');
-   container.innerHTML = '';
-   for (let doc of ALL_DOCS) {
-      let statusVal = (defaultStatusMap && defaultStatusMap[doc.id]) ? defaultStatusMap[doc.id] : "No";
-      let remarkVal = (defaultStatusMap && defaultStatusMap[doc.id + "_remark"]) ? defaultStatusMap[doc.id + "_remark"] : "";
-      let yesChecked = statusVal === "Yes" ? 'checked' : '';
-      let noChecked = statusVal === "No" ? 'checked' : '';
-      let div = document.createElement('div');
-      div.className = 'bg-slate-50 p-3 rounded-xl border';
-      div.innerHTML = `
-                <div class="text-sm font-semibold mb-2 text-center">
-                    ${doc.label}
-                </div>
-
-                <div class="flex gap-3 mb-2">
-
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio"
-                               name="${doc.id}"
-                               value="Yes"
-                               ${yesChecked}
-                               class="hidden peer">
-
-                        <div class="w-full flex items-center justify-center py-1.5 text-xs font-bold rounded-lg border bg-white peer-checked:bg-emerald-50">
-                            ✔ Yes
-                        </div>
-                    </label>
-
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio"
-                               name="${doc.id}"
-                               value="No"
-                               ${noChecked}
-                               class="hidden peer">
-
-                        <div class="w-full flex items-center justify-center py-1.5 text-xs font-bold rounded-lg border bg-white peer-checked:bg-rose-50">
-                            ✘ No
-                        </div>
-                    </label>
-
-                </div>
-
-                <div class="text-center">
-
-                    <label class="block text-[10px] text-slate-500 mb-1">
-                        Remark (optional)
-                    </label>
-
-                    <input type="text"
-                           name="${doc.id}_remark"
-                           value="${escapeHtml(remarkVal)}"
-                           class="w-full px-2 py-1 text-xs border rounded-md text-center"
-                           placeholder="Add note...">
-
-                </div>
+         function openReportGenerator() {
+         
+            const modal =
+               document.getElementById('reportGeneratorModal');
+         
+            modal.classList.remove('hidden');
+         
+            modal.classList.add('flex');
+         
+            loadReportYears();
+         
+            renderBatchSelection();
+         
+         }
+         
+         function closeReportGenerator() {
+         
+            const modal =
+               document.getElementById('reportGeneratorModal');
+         
+            modal.classList.add('hidden');
+         
+            modal.classList.remove('flex');
+         
+         }
+         
+         function loadReportYears() {
+         
+            const years = [
+               ...new Set(
+                  assessments.map(
+                     a => extractYearFromISO(a.assessmentDateISO)
+                  )
+               )
+            ].sort();
+         
+            const select =
+               document.getElementById('reportYear');
+         
+            select.innerHTML =
+               '<option value="">Select Year</option>';
+         
+            years.forEach(y => {
+         
+               select.innerHTML += `
+         <option value="${y}">
+         ${y}
+         </option>
+         `;
+         
+            });
+         
+         }
+         
+         function updatePocketPreview() {
+         
+            const year =
+               document.getElementById('reportYear').value;
+         
+            const fileNo =
+               document.getElementById('fileNumber').value;
+         
+            document.getElementById('pocketPreview')
+               .innerText =
+               (year && fileNo) ?
+               `${year}-${fileNo}` :
+               '-';
+         
+         }
+         
+         function renderBatchSelection() {
+         
+            const year =
+               document.getElementById('reportYear').value;
+         
+            const fileNo =
+               document.getElementById('fileNumber').value;
+         
+            const tbody =
+               document.getElementById('batchSelectionTable');
+         
+            tbody.innerHTML = '';
+         
+            if (!year) return;
+         
+            const filtered =
+               assessments.filter(
+                  a => extractYearFromISO(a.assessmentDateISO) === year
+               );
+         
+            filtered.forEach((batch) => {
+         
+               tbody.innerHTML += `
+         
+         <tr>
+         
+         <td class="border p-2 text-center">
+         
+         <input type="checkbox"
+         class="batchSelect"
+         value="${batch.batchId}"
+         onchange="updateSelectedCount();generateLivePreview();">
+         
+         </td>
+         
+         <td class="border p-2 text-center font-semibold text-blue-700">
+         
+         ${batch.batchId}
+         
+         </td>
+         
+         <td class="border p-2 text-center">
+         
+         ${formatDisplayDate(batch.assessmentDateISO)}
+         
+         </td>
+         
+         <td class="border p-2 text-center font-bold">
+         
+         ${batch.pocketNo || '-'}
+         
+         </td>
+         
+         </tr>
+         
+         `;
+         
+            });
+         
+            updatePocketPreview();
+         
+            updateSelectedCount();
+         
+         }
+         
+         function toggleAllBatches() {
+         
+            const checked =
+               document.getElementById('selectAllBatches').checked;
+         
+            document.querySelectorAll('.batchSelect')
+               .forEach(cb => {
+         
+                  cb.checked = checked;
+         
+               });
+         
+            updateSelectedCount();
+         
+            generateLivePreview();
+         
+         }
+         
+         function updateSelectedCount() {
+         
+            const count =
+               document.querySelectorAll('.batchSelect:checked')
+               .length;
+         
+            document.getElementById('selectedCount')
+               .innerText = count;
+         
+         }
+         
+         function getSelectedBatches() {
+         
+            const year =
+               document.getElementById('reportYear').value;
+         
+            const selected = [...document.querySelectorAll('.batchSelect:checked')]
+               .map(cb => cb.value);
+         
+            return assessments.filter(a =>
+         
+               extractYearFromISO(a.assessmentDateISO) === year &&
+               selected.includes(a.batchId)
+         
+            );
+         
+         }
+         
+         function generateLivePreview() {
+         
+            const container =
+               document.getElementById('livePreview');
+         
+            const year =
+               document.getElementById('reportYear').value;
+         
+            const fileNo =
+               document.getElementById('fileNumber').value;
+         
+            const fileNoText =
+              `${year}-${fileNo}`;
+         
+            const type =
+               document.querySelector(
+                  'input[name="reportType"]:checked'
+               ).value;
+         
+            const selectedBatches =
+               getSelectedBatches();
+         
+            if (selectedBatches.length === 0) {
+         
+               container.innerHTML =
+                  '<div class="text-slate-400">No batches selected</div>';
+         
+               return;
+         
+            }
+         
+            if (type === 'index') {
+         
+         let html = `
+         <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold w-full text-center">
+            Annexure – 4
+            </h2>
+            <h3 class="text-xl font-bold mt-1 w-full text-center">
+            Index Sheet for FICSI ${year}
+            </h3>
+            <div class="mt-5 text-left font-semibold">
+               Name of the Sector Skill Council (SSC):
+               Food Industry Capacity & Skill Initiative
+            </div>
+            <div class="mt-3 text-left font-semibold">
+               Sector: FICSI
+            </div>
+         </div>
+         <table class="w-full border text-sm text-center border-collapse">
+         <thead class="bg-slate-100">
+            <tr>
+               <th class="border p-2">
+                  Sr. No.
+               </th>
+               <th class="border p-2">
+                  Batch ID
+               </th>
+               <th class="border p-2">
+                  Date of Assessment
+               </th>
+               <th class="border p-2">
+                  Pocket No.
+               </th>
+            </tr>
+         </thead>
+         <tbody>
             `;
-      container.appendChild(div);
-   }
-}
-
-function getStatusFromModal() {
-   let map = {};
-   for (let doc of ALL_DOCS) {
-      let sel = document.querySelector(`input[name="${doc.id}"]:checked`);
-      map[doc.id] = sel ? sel.value : "No";
-      let remarkInput = document.querySelector(`input[name="${doc.id}_remark"]`);
-      map[doc.id + "_remark"] = remarkInput ? remarkInput.value : "";
-   }
-   return map;
-}
-
-function resetModalForAdd() {
-   document.getElementById('editIndex').value = '-1';
-   document.getElementById('modalTitle').innerText = '➕ New Batch Assessment';
-   document.getElementById('entryForm').reset();
-   document.getElementById('batchId').value = '';
-   document.getElementById('assessDate').value = '';
-   document.getElementById('totalCandidates').value = '0';
-   document.getElementById('presentCandidates').value = '0';
-   buildModalRadios(null);
-   updateAbsentPreview();
-}
-
-function editBatch(index) {
-   let entry = assessments[index];
-   if (!entry) return;
-   document.getElementById('editIndex').value = index;
-   document.getElementById('modalTitle').innerText = '✏️ Edit Batch';
-   document.getElementById('batchId').value = entry.batchId;
-   document.getElementById('assessDate').value = entry.assessmentDateISO;
-   document.getElementById('totalCandidates').value = entry.totalCandidates;
-   document.getElementById('presentCandidates').value = entry.presentCandidates;
-   buildModalRadios(entry.statusMap);
-   updateAbsentPreview();
-   openModal();
-}
-
-function deleteBatch(index) {
-   if (confirm('Delete batch? Also from Google Sheet if connected.')) {
-      assessments.splice(index, 1);
-      dataChanged();
-      showToast('Deleted');
-   }
-}
-
-function saveBatchFromModal() {
-   let batchId = document.getElementById('batchId').value.trim();
-   let dateRaw = document.getElementById('assessDate').value;
-   let total = parseInt(document.getElementById('totalCandidates').value);
-   let present = parseInt(document.getElementById('presentCandidates').value);
-   if (!batchId || !dateRaw) {
-      showToast("Batch ID & Date required");
-      return false;
-   }
-   if (present > total) {
-      showToast("Present cannot exceed total");
-      return false;
-   }
-   const editIdx = parseInt(document.getElementById('editIndex').value);
-   // Duplicate check
-   if (isDuplicateBatchId(batchId, editIdx)) {
-      showToast("❌ Duplicate Batch ID! This Batch ID already exists. Please use a unique ID.");
-      return false;
-   }
-   const statusMap = getStatusFromModal();
-   const newEntry = {
-      batchId,
-      totalCandidates: total,
-      presentCandidates: present,
-      assessmentDateISO: dateRaw,
-      statusMap
-   };
-   if (editIdx >= 0 && editIdx < assessments.length) assessments[editIdx] = newEntry;
-   else assessments.push(newEntry);
-   dataChanged();
-   return true;
-}
-
-let modal = document.getElementById('entryModal');
-
-function openModal() {
-   modal.classList.remove('hidden');
-   setTimeout(() => {
-      modal.style.visibility = 'visible';
-      modal.style.opacity = '1';
-   }, 10);
-}
-
-function closeModal() {
-   modal.style.visibility = 'hidden';
-   modal.style.opacity = '0';
-   setTimeout(() => modal.classList.add('hidden'), 200);
-}
-
-function openAddModal() {
-   resetModalForAdd();
-   openModal();
-}
-
-function updateAbsentPreview() {
-   let t = parseInt(document.getElementById('totalCandidates')?.value) || 0;
-   let p = parseInt(document.getElementById('presentCandidates')?.value) || 0;
-   document.getElementById('liveAbsentPreview').innerText = Math.max(0, t - p);
-}
-document.getElementById('entryForm').addEventListener('submit', (e) => {
-   e.preventDefault();
-   if (saveBatchFromModal()) closeModal();
-});
-document.getElementById('totalCandidates')?.addEventListener('input', updateAbsentPreview);
-document.getElementById('presentCandidates')?.addEventListener('input', updateAbsentPreview);
-
-// Excel Import with duplicate skip
-function handleExcelImport(event) {
-   let file = event.target.files[0];
-   if (!file) return;
-   let reader = new FileReader();
-   reader.onload = function (e) {
-      let data = new Uint8Array(e.target.result);
-      let workbook = XLSX.read(data, {
-         type: 'array'
-      });
-      let sheet = workbook.Sheets[workbook.SheetNames[0]];
-      let rows = XLSX.utils.sheet_to_json(sheet, {
-         defval: ""
-      });
-      let imported = 0,
-         duplicatesSkipped = 0;
-      for (let row of rows) {
-         let batchId = row['Batch ID'] || row['batchId'];
-         let total = parseInt(row['Total Candidates'] || 0);
-         let present = parseInt(row['Present Candidates'] || 0);
-         let dateRaw = row['Assessment Date'] || '';
-         if (!batchId || !dateRaw) continue;
-         if (isDuplicateBatchId(batchId.toString())) {
-            duplicatesSkipped++;
-            continue;
+         
+               selectedBatches.forEach((b, i) => {
+         
+                  html += `
+         
+         <tr>
+         
+         <td class="border p-2 text-center">
+         ${i+1}
+         </td>
+         
+         <td class="border p-2 text-center">
+         ${b.batchId}
+         </td>
+         
+         <td class="border p-2 text-center">
+         ${formatDisplayDate(b.assessmentDateISO)}
+         </td>
+         
+         <td class="border p-2 text-center font-bold">
+         ${b.pocketNo || '-'}
+         </td>
+         
+         </tr>
+         
+         `;
+         
+               });
+         
+               html += '</tbody></table>';
+         
+               container.innerHTML = html;
+         
+            } else {
+         
+               let html = `
+         
+         <div class="overflow-auto">
+         
+         <table class="min-w-[2500px] border text-xs">
+         
+         <thead class="bg-slate-100">
+         
+         <tr>
+         
+         <th class="border p-2">S.No</th>
+         <th class="border p-2">Batch ID</th>
+         <th class="border p-2">Candidates</th>
+         <th class="border p-2">Present</th>
+         <th class="border p-2">Absent</th>
+         <th class="border p-2">Assessment Date</th>
+         
+         `;
+         
+               ALL_DOCS.forEach(doc => {
+         
+                  html += `
+         <th class="border p-2">
+         ${doc.label}
+         </th>
+         `;
+         
+               });
+         
+               html += `
+         
+         <th class="border p-2">
+         Outher
+         </th>
+         
+         <th class="border p-2">
+         Missing
+         </th>
+         
+         </tr>
+         
+         </thead>
+         
+         <tbody>
+         
+         `;
+         
+               selectedBatches.forEach((b, i) => {
+         
+                  html += `
+         
+         <tr>
+         
+         <td class="border p-2 text-center">
+         ${i+1}
+         </td>
+         
+         <td class="border p-2 text-center">
+         ${b.batchId}
+         </td>
+         
+         <td class="border p-2 text-center">
+         ${b.totalCandidates}
+         </td>
+         
+         <td class="border p-2 text-center">
+         ${b.presentCandidates}
+         </td>
+         
+         <td class="border p-2 text-center">
+         ${b.totalCandidates - b.presentCandidates}
+         </td>
+         
+         <td class="border p-2 text-center">
+         ${formatDisplayDate(b.assessmentDateISO)}
+         </td>
+         
+         `;
+         
+                  ALL_DOCS.forEach(doc => {
+         
+                     html += `
+         
+         <td class="border p-2 text-center">
+         
+         ${b.statusMap[doc.id] || 'No'}
+         
+         </td>
+         
+         `;
+         
+                  });
+         
+                  html += `
+         
+         <td class="border p-2">
+         
+         ${computeOutherList(b.statusMap).join(', ')}
+         
+         </td>
+         
+         <td class="border p-2">
+         
+         ${computeMissingList(b.statusMap).join(', ')}
+         
+         </td>
+         
+         </tr>
+         
+         `;
+         
+               });
+         
+               html += '</tbody></table></div>';
+         
+               container.innerHTML = html;
+         
+            }
+         
          }
-         let isoDate = toISODate(dateRaw);
-         if (!isoDate) continue;
-         let statusMap = {};
-         for (let doc of ALL_DOCS) {
-            let sVal = row[doc.label] || row[doc.id] || 'No';
-            statusMap[doc.id] = (sVal.toString().toLowerCase() === 'yes' || sVal === 'Yes') ? 'Yes' : 'No';
-            let remarkKey = doc.label + '_remark';
-            let remarkVal = row[remarkKey] || row[doc.id + '_remark'] || '';
-            statusMap[doc.id + '_remark'] = remarkVal;
+         
+         function printGeneratedReport() {
+         const year =
+         document.getElementById('reportYear').value;
+         const content =
+         document.getElementById('livePreview').innerHTML;
+         const win =
+         window.open('', '', 'width=1400,height=900');
+         win.document.write(`
+         <html>
+            <head>
+               <title>
+                  Index Report
+               </title>
+               <style>
+                  body{
+                  font-family: Arial, sans-serif;
+                  padding: 25px;
+         text-align: center;
+                  }
+                  .print-header{
+                  width: 100%;
+                  text-align: center;
+                  margin-bottom: 25px;
+                  }
+                  .print-header h1{
+                  margin: 0;
+                  font-size: 26px;
+                  font-weight: bold;
+                  }
+                  .print-header h2{
+                  margin-top: 8px;
+                  font-size: 20px;
+                  font-weight: bold;
+                  }
+                  .print-info{
+                  margin-top: 25px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  line-height: 1.8;
+                  }
+                  table{
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-top: 20px;
+         text-align: center;
+                  }
+                  th,td{
+                  border: 1px solid black;
+                  padding: 8px;
+                  font-size: 12px;
+                  text-align: center;
+                  vertical-align: middle;
+                  }
+                  th{
+                  background: #e5e7eb;
+                  }
+               </style>
+            </head>
+            <body>
+               <div class="print-header">
+                  
+               </div>
+         <div style="width:100%; text-align:center;">
+               ${content}
+         </div>
+            </body>
+         </html>
+         `);
+         win.document.close();
+         win.focus();
+         win.print();
          }
-         assessments.push({
-            batchId: batchId.toString(),
-            totalCandidates: total,
-            presentCandidates: present,
-            assessmentDateISO: isoDate,
-            statusMap
+         
+         window.openReportGenerator =
+            openReportGenerator;
+         
+         window.closeReportGenerator =
+            closeReportGenerator;
+         
+         window.renderBatchSelection =
+            renderBatchSelection;
+         
+         window.toggleAllBatches =
+            toggleAllBatches;
+         
+         window.generateLivePreview =
+            generateLivePreview;
+         
+         function exportGeneratedExcel() {
+         
+            const selectedBatches =
+               getSelectedBatches();
+         
+            if (selectedBatches.length === 0) {
+         
+               showToast('Select batches');
+         
+               return;
+         
+            }
+         
+            const year =
+               document.getElementById('reportYear').value;
+         
+            const rows =
+               selectedBatches.map((b, i) => ({
+         
+                  'Sr. No.': i + 1,
+         
+                  'Batch ID': b.batchId,
+         
+                  'Date of Assessment': formatDisplayDate(b.assessmentDateISO),
+         
+                  'Pocket No.': b.pocketNo || '-'
+         
+               }));
+         
+            const ws =
+               XLSX.utils.json_to_sheet(rows);
+         
+            const wb =
+               XLSX.utils.book_new();
+         
+            XLSX.utils.book_append_sheet(
+               wb,
+               ws,
+               'Index Report'
+            );
+         
+            XLSX.writeFile(
+               wb,
+               `Index_Report_${year}.xlsx`
+            );
+         
+         }
+         
+         window.printGeneratedReport =
+            printGeneratedReport;
+            
+         async function exportGeneratedPDF() {
+         
+         const selectedBatches =
+         getSelectedBatches();
+         
+         if (selectedBatches.length === 0) {
+         
+         showToast('Select batches');
+         
+         return;
+         
+         }
+         
+         const { jsPDF } =
+         window.jspdf;
+         
+         const doc =
+         new jsPDF({
+         orientation: 'landscape'
          });
-         imported++;
-      }
-      dataChanged();
-      if (duplicatesSkipped) showToast(`Imported ${imported} batches, skipped ${duplicatesSkipped} duplicates.`);
-      else showToast(`Imported ${imported} batches.`);
-   };
-   reader.readAsArrayBuffer(file);
-   event.target.value = '';
-}
-
-function downloadDemoImportFile() {
-   let demoRows = [{
-      "Batch ID": "DEMO001",
-      "Assessment Date": "2025-01-10",
-      "Total Candidates": 20,
-      "Present Candidates": 18,
-      "Attendance Sheet": "Yes",
-      "Attendance Sheet_remark": "Signed",
-      "Annexure M": "Yes",
-      "Assessor Declaration": "Yes",
-      "Declaration Form": "Yes",
-      "Checklist by Assessor": "Yes",
-      "Feedback Form for VTP": "Yes",
-      "TP Declaration form": "Yes",
-      "TP-TC Declaration Form": "No",
-      "TP-TC Declaration Form_remark": "Missing signature",
-      "Training feedback form by Assessor": "Yes",
-      "Candidate Feedback": "Yes",
-      "Placement Sheet": "Yes",
-      "Training Attendance Sheet": "Yes",
-      "Candidate Enrollment Form": "Yes",
-      "Annexure N": "No",
-      "Annexure N_remark": "Not applicable"
-   }];
-   let ws = XLSX.utils.json_to_sheet(demoRows);
-   let wb = XLSX.utils.book_new();
-   XLSX.utils.book_append_sheet(wb, ws, "Demo");
-   XLSX.writeFile(wb, "FICSI_Demo_Remarks.xlsx");
-}
-
-function exportToExcel() {
-   let filtered = getFilteredAssessments();
-   let data = filtered.map(e => {
-      let row = {
-         'Batch ID': e.batchId,
-         'Total Candidates': e.totalCandidates,
-         'Present Candidates': e.presentCandidates,
-         'Absent': e.totalCandidates - e.presentCandidates,
-         'Assessment Date': formatDisplayDate(e.assessmentDateISO)
-      };
-      for (let doc of ALL_DOCS) {
-         row[doc.label] = e.statusMap[doc.id] || 'No';
-         row[doc.label + '_remark'] = e.statusMap[doc.id + '_remark'] || '';
-      }
-      row['Outher'] = computeOutherList(e.statusMap).join(', ');
-      row['Missing'] = computeMissingList(e.statusMap).join(', ');
-      return row;
-   });
-   let ws = XLSX.utils.json_to_sheet(data);
-   let wb = XLSX.utils.book_new();
-   XLSX.utils.book_append_sheet(wb, ws, "Report");
-   XLSX.writeFile(wb, `assessment_${Date.now()}.xlsx`);
-}
-async function exportToPDF() {
-   let {
-      jsPDF
-   } = window.jspdf;
-   let doc = new jsPDF({
-      orientation: 'landscape'
-   });
-   let filtered = getFilteredAssessments();
-   let body = filtered.map(e => [e.batchId, e.totalCandidates, e.presentCandidates, e.totalCandidates - e.presentCandidates, formatDisplayDate(e.assessmentDateISO), computeOutherList(e.statusMap).join(', '), computeMissingList(e.statusMap).join(', ')]);
-   doc.autoTable({
-      head: [
-         ['Batch ID', 'Total', 'Present', 'Absent', 'Date', 'Outher', 'Missing']
-      ],
-      body,
-      styles: {
-         fontSize: 8
-      }
-   });
-   doc.save('report.pdf');
-}
-
-// Google Sheets functions (unchanged)
-function showClientIdModal() {
-   let m = document.getElementById('clientIdModal');
-   m.classList.remove('hidden');
-   setTimeout(() => {
-      m.style.visibility = 'visible';
-      m.style.opacity = '1';
-   }, 10);
-}
-
-function closeClientIdModal() {
-   let m = document.getElementById('clientIdModal');
-   m.style.visibility = 'hidden';
-   m.style.opacity = '0';
-   setTimeout(() => m.classList.add('hidden'), 200);
-}
-
-function saveClientIdAndProceed() {
-   let newClientId = document.getElementById('clientIdInput').value.trim();
-   if (!newClientId) {
-      showToast("Enter Client ID");
-      return;
-   }
-   localStorage.setItem("ficsi_google_client_id", newClientId);
-   clientId = newClientId;
-   closeClientIdModal();
-   initGoogleSync();
-}
-
-function showSyncStatus(show, msg) {
-   let bar = document.getElementById('googleSyncStatus');
-   if (show) {
-      bar.classList.remove('hidden');
-      document.getElementById('syncStatusMsg').innerText = msg || "Connected.";
-   } else bar.classList.add('hidden');
-}
-async function authenticateGoogle() {
-   if (!clientId) {
-      showClientIdModal();
-      return;
-   }
-   let tc = google.accounts.oauth2.initTokenClient({
-      client_id: clientId,
-      scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
-      callback: async (resp) => {
-         if (resp.error) {
-            showToast("Auth error: " + resp.error);
-            return;
+         
+         const year =
+         document.getElementById('reportYear').value;
+         
+         const pageWidth =
+         doc.internal.pageSize.getWidth();
+         
+         // HEADER
+         
+         doc.setFontSize(18);
+         
+         doc.text(
+         'Annexure – 4',
+         pageWidth / 2,
+         15,
+         {
+         align: 'center'
          }
-         accessToken = resp.access_token;
-         await loadFromGoogleSheet();
-		 await syncToGoogleSheet();
-      }
-   });
-   tc.requestAccessToken({
-      prompt: 'select_account'
-   });
-}
-
-async function authenticateAndSyncExisting() {
-
-   if (!clientId) {
-      showClientIdModal();
-      return;
-   }
-
-   let tc = google.accounts.oauth2.initTokenClient({
-
-      client_id: clientId,
-
-      scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
-
-      callback: async (resp) => {
-
-         if (resp.error) {
-            showToast("❌ Auth error");
-            return;
+         );
+         
+         doc.setFontSize(15);
+         
+         doc.text(
+         `Index Sheet for FICSI ${year}`,
+         pageWidth / 2,
+         25,
+         {
+         align: 'center'
          }
-
-         accessToken = resp.access_token;
-
-         isGoogleReady = true;
-
-         showSyncStatus(true, "Connected.");
-
-         await loadFromGoogleSheet();
-
-         await syncToGoogleSheet();
-      }
-   });
-
-   tc.requestAccessToken({
-      prompt: 'select_account'
-   });
-}
-async function syncToGoogleSheet() {
-   if (!spreadsheetId || !accessToken) return;
-   try {
-      let headerRow = ["Batch ID", "Total Candidates", "Present Candidates", "Assessment Date ISO"];
-      for (let doc of ALL_DOCS) {
-         headerRow.push(doc.label, doc.label + "_remark");
-      }
-      let rows = [headerRow];
-      assessments.forEach(a => {
-         let row = [a.batchId, a.totalCandidates, a.presentCandidates, a.assessmentDateISO];
-         for (let doc of ALL_DOCS) {
-            row.push(a.statusMap[doc.id] || "No", a.statusMap[doc.id + "_remark"] || "");
-         }
-         rows.push(row);
-      });
-      let url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:ZZ?valueInputOption=RAW`;
-      await fetch(url, {
-         method: 'PUT',
-         headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+         );
+         
+         doc.setFontSize(11);
+         
+         doc.text(
+         'Name of the Sector Skill Council (SSC): Food Industry Capacity & Skill Initiative',
+         14,
+         40
+         );
+         
+         doc.text(
+         'Sector: FICSI',
+         14,
+         48
+         );
+         
+         // TABLE DATA
+         
+         const body =
+         selectedBatches.map((b, i) => [
+         
+         i + 1,
+         
+         b.batchId,
+         
+         formatDisplayDate(
+            b.assessmentDateISO
+         ),
+         
+         b.pocketNo || '-'
+         
+         ]);
+         
+         // TABLE
+         
+         doc.autoTable({
+         
+         theme: 'grid',
+         
+         tableWidth: 'auto',
+         
+         startY: 55,
+         
+         margin: {
+         left: 14,
+         right: 14
          },
-         body: JSON.stringify({
-            values: rows
-         })
-      });
-      showToast("📤 Synced to Google Sheet");
-   } catch (e) {
-      console.warn(e);
-      showToast("Sync failed");
-   }
-}
-async function loadFromGoogleSheet() {
-   if (!spreadsheetId || !accessToken) return;
-   try {
-      let resp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:Z2000`, {
-         headers: {
-            'Authorization': `Bearer ${accessToken}`
+         
+         head: [[
+         'Sr. No.',
+         'Batch ID',
+         'Date of Assessment',
+         'Pocket No.'
+         ]],
+         
+         body,
+         
+         styles: {
+         halign: 'center',
+         valign: 'middle',
+         fontSize: 10
+         },
+         
+         headStyles: {
+         fillColor: [220,220,220],
+         textColor: [0,0,0],
+         halign: 'center',
+         valign: 'middle',
+         fontStyle: 'bold'
+         },
+         
+         columnStyles: {
+         
+         0: {
+            halign: 'center',
+            valign: 'middle'
+         },
+         
+         1: {
+            halign: 'center',
+            valign: 'middle'
+         },
+         
+         2: {
+            halign: 'center',
+            valign: 'middle'
+         },
+         
+         3: {
+            halign: 'center',
+            valign: 'middle'
          }
-      });
-      let data = await resp.json();
-      let rows = data.values;
-      if (!rows || rows.length < 2) return;
-      let headers = rows[0];
-      let idx = {
-         batchId: headers.indexOf("Batch ID"),
-         total: headers.indexOf("Total Candidates"),
-         present: headers.indexOf("Present Candidates"),
-         date: headers.indexOf("Assessment Date ISO")
-      };
-      if (idx.batchId === -1) return;
-      let loaded = [];
-      for (let i = 1; i < rows.length; i++) {
-         let r = rows[i];
-         if (!r[idx.batchId]) continue;
-         let statusMap = {};
-         for (let doc of ALL_DOCS) {
-            let colStatus = headers.indexOf(doc.label);
-            let colRemark = headers.indexOf(doc.label + "_remark");
-            statusMap[doc.id] = (colStatus !== -1 && r[colStatus] && r[colStatus].toString().toLowerCase() === 'yes') ? 'Yes' : 'No';
-            statusMap[doc.id + "_remark"] = (colRemark !== -1 && r[colRemark]) ? r[colRemark] : "";
+         
          }
-         loaded.push({
-            batchId: r[idx.batchId],
-            totalCandidates: parseInt(r[idx.total]) || 0,
-            presentCandidates: parseInt(r[idx.present]) || 0,
-            assessmentDateISO: r[idx.date] || "",
-            statusMap
+         
          });
-      }
-      if (loaded.length) {
-         assessments = loaded;
-         renderTable();
-         showToast(`Loaded ${assessments.length} batches`);
-      }
-   } catch (e) {
-      console.warn(e);
-      showToast("Error loading sheet");
-   }
-}
-
-function disconnectGoogleSheet() {
-   accessToken = null;
-   isGoogleReady = false;
-   showSyncStatus(false, "");
-   showToast("Disconnected.");
-}
-async function initGoogleSync() {
-   if (spreadsheetId) {
-      if (accessToken) {
-         showSyncStatus(true, "Already connected.");
-         await loadFromGoogleSheet();
-		 await syncToGoogleSheet();
-      } else {
-         await authenticateAndSyncExisting();
-      }
-   } else {
-      await authenticateGoogle();
-   }
-}
-
-function dataChanged() {
-   renderTable();
-   if (isGoogleReady && spreadsheetId && accessToken) syncToGoogleSheet();
-}
-
-   window.onload = () => {
-   renderTable();
-};
-window.initGoogleSync = initGoogleSync;
-window.disconnectGoogleSheet = disconnectGoogleSheet;
-window.editBatch = editBatch;
-window.deleteBatch = deleteBatch;
-window.openAddModal = openAddModal;
-window.closeModal = closeModal;
-window.applyYearFilter = applyYearFilter;
-window.clearFilter = clearFilter;
-window.applySearchFilter = applySearchFilter;
-window.clearSearch = clearSearch;
-window.handleExcelImport = handleExcelImport;
-window.exportToExcel = exportToExcel;
-window.exportToPDF = exportToPDF;
-window.showIndexModal = showIndexModal;
-window.closeIndexModal = closeIndexModal;
-window.exportIndexToExcel = exportIndexToExcel;
-window.exportIndexToPDF = exportIndexToPDF;
-window.downloadDemoImportFile = downloadDemoImportFile;
-window.saveClientIdAndProceed = saveClientIdAndProceed;
-window.closeClientIdModal = closeClientIdModal;
-</script>
-</body>
+         
+         // SAVE PDF
+         
+         doc.save(
+         `Index_Report_${year}.pdf`
+         );
+         
+         }   
+         
+         window.updatePocketPreview =
+            updatePocketPreview;
+            
+         window.exportGeneratedExcel =
+         exportGeneratedExcel;
+         
+         window.exportGeneratedPDF =
+         exportGeneratedPDF;   
+         // ---------- DOCS LIST (with remark field) ----------
+         const ALL_DOCS = [{
+               id: "attendanceSheet",
+               label: "Attendance Sheet",
+               group: "mandatory"
+            },
+            {
+               id: "annexureM",
+               label: "Annexure M",
+               group: "mandatory"
+            },
+            {
+               id: "assessorDeclaration",
+               label: "Assessor Declaration",
+               group: "mandatory"
+            },
+            {
+               id: "declarationForm",
+               label: "Declaration Form",
+               group: "mandatory"
+            },
+            {
+               id: "checklistAssessor",
+               label: "Checklist by Assessor",
+               group: "mandatory"
+            },
+            {
+               id: "vtpFeedback",
+               label: "Feedback Form for VTP",
+               group: "mandatory"
+            },
+            {
+               id: "tpDeclaration",
+               label: "TP Declaration form",
+               group: "mandatory"
+            },
+            {
+               id: "tptcDeclaration",
+               label: "TP-TC Declaration Form",
+               group: "mandatory"
+            },
+            {
+               id: "trainingFeedback",
+               label: "Training feedback form by Assessor",
+               group: "mandatory"
+            },
+            {
+               id: "candidateFeedback",
+               label: "Candidate Feedback",
+               group: "mandatory"
+            },
+            {
+               id: "placementSheet",
+               label: "Placement Sheet",
+               group: "extra"
+            },
+            {
+               id: "trainingAttendanceSheet",
+               label: "Training Attendance Sheet",
+               group: "extra"
+            },
+            {
+               id: "enrollmentForm",
+               label: "Candidate Enrollment Form",
+               group: "extra"
+            },
+            {
+               id: "annexureN",
+               label: "Annexure N",
+               group: "extra"
+            }
+         ];
+         let assessments = [];
+         let currentFilterYear = "all";
+         let currentSearchTerm = "";
+         // Google vars
+         let accessToken = null,
+            spreadsheetId = "1FtvIj-PrGYoumdJfqXJSvibdMirw3ZloNTBciHMlYBc",
+            clientId = localStorage.getItem("ficsi_google_client_id");
+         let isGoogleReady = false;
+         
+         // helpers
+         function parseExcelDate(v) {
+            if (typeof v === 'number') {
+               let d = new Date((v - 25569) * 86400000);
+               if (!isNaN(d)) return d;
+            }
+            if (v instanceof Date && !isNaN(v)) return v;
+            if (typeof v === 'string') {
+               let d = new Date(v);
+               if (!isNaN(d)) return d;
+            }
+            return null;
+         }
+         
+         function toISODate(di) {
+            if (!di) return "";
+            if (typeof di === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(di)) return di;
+            let d = parseExcelDate(di);
+            return d && !isNaN(d) ? d.toISOString().slice(0, 10) : "";
+         }
+         
+         function formatDisplayDate(iso) {
+            if (!iso) return "";
+            let d = new Date(iso);
+            return isNaN(d) ? iso : d.toLocaleDateString('en-GB', {
+               day: 'numeric',
+               month: 'long',
+               year: 'numeric'
+            });
+         }
+         
+         function extractYearFromISO(iso) {
+            return iso ? iso.split('-')[0] : "2023";
+         }
+         
+         function computeOutherList(sm) {
+            return ALL_DOCS.filter(d => d.group === "extra" && sm[d.id] === "Yes").map(d => d.label);
+         }
+         
+         function computeMissingList(sm) {
+            return ALL_DOCS.filter(d => d.group === "mandatory" && sm[d.id] === "No").map(d => d.label);
+         }
+         
+         function formatNumberedList(list) {
+            if (!list.length) return '<span class="text-slate-400 italic">— None —</span>';
+            return `<ol class="numbered-list">${list.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ol>`;
+         }
+         
+         function escapeHtml(str) {
+            return String(str).replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+         }
+         
+         function showToast(msg) {
+            let t = document.createElement('div');
+            t.innerText = msg;
+            t.className = 'fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-2 rounded-xl shadow-lg z-50 text-sm';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+         }
+         
+         // ---------- Duplicate check ----------
+         function isDuplicateBatchId(batchId, excludeIndex = -1) {
+            return assessments.some((item, idx) => idx !== excludeIndex && item.batchId.toLowerCase() === batchId.toLowerCase());
+         }
+         
+         // ---------- Filtering: Year + Search ----------
+         function getFilteredAssessments() {
+            let filtered = assessments;
+            if (currentFilterYear !== "all") {
+               filtered = filtered.filter(e => extractYearFromISO(e.assessmentDateISO) === currentFilterYear);
+            }
+            if (currentSearchTerm.trim() !== "") {
+               const term = currentSearchTerm.trim().toLowerCase();
+               filtered = filtered.filter(e => e.batchId.toLowerCase().includes(term));
+            }
+            return filtered;
+         }
+         
+         function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            const filtered = getFilteredAssessments();
+            filtered.forEach((entry, idx) => {
+               const originalIndex = assessments.findIndex(a => a === entry);
+               const absent = entry.totalCandidates - entry.presentCandidates;
+               const outherList = computeOutherList(entry.statusMap);
+               const missingList = computeMissingList(entry.statusMap);
+               let statusCells = '';
+               for (let doc of ALL_DOCS) {
+                  let val = entry.statusMap[doc.id] || "No";
+                  let remark = entry.statusMap[doc.id + "_remark"] || "";
+                  let color = val === "Yes" ? "text-emerald-600" : "text-rose-600";
+                  statusCells += `
+                  <td class="p-3 border-r border-slate-200 text-center align-middle">
+                      <div class="flex flex-col items-center justify-center min-h-[60px]">
+                          <div class="status-badge ${color}">
+                              ${val}
+                          </div>
+                  
+                          ${
+                              remark
+                              ? `<div class="remark-text text-center">📝 ${escapeHtml(remark)}</div>`
+                              : `<div class="remark-text text-slate-300 text-center">—</div>`
+                          }
+                      </div>
+                  </td>`;
+               }
+               const row = document.createElement('tr');
+               row.className = "hover:bg-blue-50/40 border-b";
+               row.innerHTML = `<td class="p-3 border-r text-center">${idx+1}</td>
+                         <td class="p-3 border-r font-semibold text-blue-700 text-center">${escapeHtml(entry.batchId)}</td>
+                         <td class="p-3 border-r text-center">${entry.totalCandidates}</td>
+                         <td class="p-3 border-r text-center">${entry.presentCandidates}</td>
+                         <td class="p-3 border-r text-center font-bold text-rose-600">${absent}</td>
+                         <td class="p-3 border-r text-center">${formatDisplayDate(entry.assessmentDateISO)}</td>
+                         ${statusCells}
+                         <td class="p-3 border-r align-top text-center">${formatNumberedList(outherList)}</td>
+                         <td class="p-3 border-r align-top text-center">${formatNumberedList(missingList)}</td>
+                         <td class="p-3 text-center whitespace-nowrap sticky-action-td">
+                             <button onclick="editBatch(${originalIndex})" class="action-btn px-2 py-1 bg-amber-500 text-white text-[11px] rounded-lg mr-1">✏️ Edit</button>
+                             <button onclick="deleteBatch(${originalIndex})" class="action-btn px-2 py-1 bg-rose-500 text-white text-[11px] rounded-lg">🗑️ Del</button>
+                         </td>`;
+               tbody.appendChild(row);
+            });
+            if (filtered.length === 0) tbody.innerHTML = '<tr><td colspan="23" class="text-center py-10 text-slate-400">No matching batches. Add or import.</td></tr>';
+            updateYearFilterDropdown();
+         }
+         
+         function updateYearFilterDropdown() {
+            let years = [...new Set(assessments.map(a => extractYearFromISO(a.assessmentDateISO)))].sort();
+            let sel = document.getElementById('yearFilter');
+            let curr = sel.value;
+            sel.innerHTML = '<option value="all">All Years</option>' + years.map(y => `<option value="${y}">${y}</option>`).join('');
+            if (curr !== "all" && years.includes(curr)) sel.value = curr;
+            else sel.value = "all";
+         }
+         
+         function applyYearFilter() {
+            currentFilterYear = document.getElementById('yearFilter').value;
+            renderTable();
+         }
+         
+         function clearFilter() {
+            currentFilterYear = "all";
+            document.getElementById('yearFilter').value = "all";
+            renderTable();
+         }
+         
+         function applySearchFilter() {
+            currentSearchTerm = document.getElementById('searchBatchInput').value;
+            renderTable();
+         }
+         
+         function clearSearch() {
+            document.getElementById('searchBatchInput').value = "";
+            currentSearchTerm = "";
+            renderTable();
+         }
+         
+         // ---------- INDEX: generate only for selected year (or all if "all") ----------
+         function generateIndexData(forceYear = null) {
+            let targetYear = forceYear !== null ? forceYear : currentFilterYear;
+            let batches = assessments;
+            if (targetYear !== "all") {
+               batches = assessments.filter(e => extractYearFromISO(e.assessmentDateISO) === targetYear);
+            }
+            if (batches.length === 0) return [];
+            // Group by year (if all years, group; if single year, only one group)
+            let map = new Map();
+            batches.forEach(e => {
+               let y = extractYearFromISO(e.assessmentDateISO);
+               if (!map.has(y)) map.set(y, []);
+               map.get(y).push(e);
+            });
+            let result = [];
+            for (let [y, yrBatches] of map.entries()) {
+               let page = 1;
+               let entries = yrBatches.map((b, i) => ({
+                  sr: i + 1,
+                  batchId: b.batchId,
+                  date: formatDisplayDate(b.assessmentDateISO),
+                  fileName: `${y}-${String(i+1).padStart(2,'0')}`,
+                  pageRange: `${page}-${page+52}`
+               }));
+               page += 53;
+               result.push({
+                  year: y,
+                  entries
+               });
+            }
+            return result;
+         }
+         
+         function showIndexModal() {
+            let idxDiv = document.getElementById('indexContent');
+            let yearLabelSpan = document.getElementById('indexYearLabel');
+            let selectedYear = currentFilterYear; // respect current filter
+            let idxData = generateIndexData(selectedYear);
+            let html = '';
+            if (idxData.length === 0) {
+               html = '<div class="text-center py-10 text-slate-400">No batches found for the selected year.</div>';
+               yearLabelSpan.innerText = selectedYear !== "all" ? `(Year: ${selectedYear})` : "(All Years)";
+            } else {
+               let yearDisplay = selectedYear !== "all" ? selectedYear : "All Years";
+               yearLabelSpan.innerText = `(Year: ${yearDisplay})`;
+               for (let group of idxData) {
+                  html += `<div class="mb-6"><div class="bg-slate-100 p-2 font-bold">Assessment Year ${group.year}</div>
+                  <table class="w-full text-sm border">
+         		     <thead>
+         			   <tr>
+         			     <th class="border p-1">Sr. No.</th>
+         				 <th class="border p-1">Batch id</th>
+         				 <th class="border p-1">Date of Assessment</th>
+         				 <th class="border p-1">Pocket No.</th>
+         			   </tr>
+         			 </thead>
+         		 <tbody>`;
+                  group.entries.forEach(e => {
+                     html += `<tr>
+         			           <td class="border p-1 text-center">${e.sr}</td>
+         					   <td class="border p-1 text-center">${e.batchId}</td>
+         					   <td class="border p-1 text-center">${e.date}</td>
+         					   <td class="border p-1 text-center">${e.fileName}</td>
+         					 </tr>`;
+                  });
+                  html += `</tbody></table></div>`;
+               }
+            }
+            idxDiv.innerHTML = html;
+            document.getElementById('indexModal').classList.remove('hidden');
+            setTimeout(() => {
+               document.getElementById('indexModal').style.visibility = 'visible';
+               document.getElementById('indexModal').style.opacity = '1';
+            }, 10);
+         }
+         
+         function closeIndexModal() {
+            let m = document.getElementById('indexModal');
+            m.style.visibility = 'hidden';
+            m.style.opacity = '0';
+            setTimeout(() => m.classList.add('hidden'), 200);
+         }
+         
+         function exportIndexToExcel() {
+            let selectedYear = currentFilterYear;
+            let idxData = generateIndexData(selectedYear);
+            let rows = [];
+            for (let group of idxData) {
+               for (let e of group.entries) {
+                  rows.push({
+                     Year: group.year,
+                     'Sr. No.': e.sr,
+                     'Batch id': e.batchId,
+                     'Date of Assessment': e.date,
+                     'Pocket No. (File name)': e.fileName,
+                  });
+               }
+            }
+            let ws = XLSX.utils.json_to_sheet(rows);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Annexure_4");
+            XLSX.writeFile(wb, `Annexure_4_${selectedYear !== "all" ? selectedYear : "AllYears"}_${Date.now()}.xlsx`);
+         }
+         
+         async function exportIndexToPDF() {
+            let {
+               jsPDF
+            } = window.jspdf;
+            let doc = new jsPDF({
+               orientation: 'landscape'
+            });
+            let selectedYear = currentFilterYear;
+            let idxData = generateIndexData(selectedYear);
+            let body = [];
+            for (let group of idxData) {
+               for (let e of group.entries) {
+                  body.push([e.sr, e.batchId, e.date, e.fileName]);
+               }
+            }
+            doc.autoTable({
+               head: [
+                  ['Sr. No.', 'Batch id', 'Date of Assessment', 'Pocket No. (File name)', 'Page Range']
+               ],
+               body: body,
+               styles: {
+                  fontSize: 9
+               },
+               headStyles: {
+                  fillColor: [41, 128, 185]
+               }
+            });
+            doc.save(`Annexure_4_${selectedYear !== "all" ? selectedYear : "AllYears"}.pdf`);
+         }
+         
+         // Modal with remark inputs
+         function buildModalRadios(defaultStatusMap = null) {
+            let container = document.getElementById('statusInputsContainer');
+            container.innerHTML = '';
+            for (let doc of ALL_DOCS) {
+               let statusVal = (defaultStatusMap && defaultStatusMap[doc.id]) ? defaultStatusMap[doc.id] : "No";
+               let remarkVal = (defaultStatusMap && defaultStatusMap[doc.id + "_remark"]) ? defaultStatusMap[doc.id + "_remark"] : "";
+               let yesChecked = statusVal === "Yes" ? 'checked' : '';
+               let noChecked = statusVal === "No" ? 'checked' : '';
+               let div = document.createElement('div');
+               div.className = 'bg-slate-50 p-3 rounded-xl border';
+               div.innerHTML = `
+                         <div class="text-sm font-semibold mb-2 text-center">
+                             ${doc.label}
+                         </div>
+         
+                         <div class="flex gap-3 mb-2">
+         
+                             <label class="flex-1 cursor-pointer">
+                                 <input type="radio"
+                                        name="${doc.id}"
+                                        value="Yes"
+                                        ${yesChecked}
+                                        class="hidden peer">
+         
+                                 <div class="w-full flex items-center justify-center py-1.5 text-xs font-bold rounded-lg border bg-white peer-checked:bg-emerald-50">
+                                     ✔ Yes
+                                 </div>
+                             </label>
+         
+                             <label class="flex-1 cursor-pointer">
+                                 <input type="radio"
+                                        name="${doc.id}"
+                                        value="No"
+                                        ${noChecked}
+                                        class="hidden peer">
+         
+                                 <div class="w-full flex items-center justify-center py-1.5 text-xs font-bold rounded-lg border bg-white peer-checked:bg-rose-50">
+                                     ✘ No
+                                 </div>
+                             </label>
+         
+                         </div>
+         
+                         <div class="text-center">
+         
+                             <label class="block text-[10px] text-slate-500 mb-1">
+                                 Remark (optional)
+                             </label>
+         
+                             <input type="text"
+                                    name="${doc.id}_remark"
+                                    value="${escapeHtml(remarkVal)}"
+                                    class="w-full px-2 py-1 text-xs border rounded-md text-center"
+                                    placeholder="Add note...">
+         
+                         </div>
+                     `;
+               container.appendChild(div);
+            }
+         }
+         
+         function getStatusFromModal() {
+            let map = {};
+            for (let doc of ALL_DOCS) {
+               let sel = document.querySelector(`input[name="${doc.id}"]:checked`);
+               map[doc.id] = sel ? sel.value : "No";
+               let remarkInput = document.querySelector(`input[name="${doc.id}_remark"]`);
+               map[doc.id + "_remark"] = remarkInput ? remarkInput.value : "";
+            }
+            return map;
+         }
+         
+         function resetModalForAdd() {
+            document.getElementById('editIndex').value = '-1';
+            document.getElementById('modalTitle').innerText = '➕ New Batch Assessment';
+            document.getElementById('entryForm').reset();
+            document.getElementById('batchId').value = '';
+            document.getElementById('assessDate').value = '';
+            document.getElementById('totalCandidates').value = '0';
+            document.getElementById('presentCandidates').value = '0';
+            buildModalRadios(null);
+            updateAbsentPreview();
+         }
+         
+         function editBatch(index) {
+            let entry = assessments[index];
+            if (!entry) return;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitle').innerText = '✏️ Edit Batch';
+            document.getElementById('batchId').value = entry.batchId;
+            document.getElementById('assessDate').value = entry.assessmentDateISO;
+            document.getElementById('totalCandidates').value = entry.totalCandidates;
+            document.getElementById('presentCandidates').value = entry.presentCandidates;
+            buildModalRadios(entry.statusMap);
+            updateAbsentPreview();
+            openModal();
+         }
+         
+         function deleteBatch(index) {
+            if (confirm('Delete batch? Also from Google Sheet if connected.')) {
+               assessments.splice(index, 1);
+               dataChanged();
+               showToast('Deleted');
+            }
+         }
+         
+         function saveBatchFromModal() {
+            let batchId = document.getElementById('batchId').value.trim();
+            let dateRaw = document.getElementById('assessDate').value;
+            let total = parseInt(document.getElementById('totalCandidates').value);
+            let present = parseInt(document.getElementById('presentCandidates').value);
+            if (!batchId || !dateRaw) {
+               showToast("Batch ID & Date required");
+               return false;
+            }
+            if (present > total) {
+               showToast("Present cannot exceed total");
+               return false;
+            }
+            const editIdx = parseInt(document.getElementById('editIndex').value);
+            // Duplicate check
+            if (isDuplicateBatchId(batchId, editIdx)) {
+               showToast("❌ Duplicate Batch ID! This Batch ID already exists. Please use a unique ID.");
+               return false;
+            }
+            const statusMap =
+            getStatusFromModal();
+            
+            const year =
+            extractYearFromISO(dateRaw);
+         
+            const existingYearEntries =
+            assessments.filter(a =>
+            extractYearFromISO(a.assessmentDateISO) === year
+            );
+         
+            let nextPocket = existingYearEntries.length + 1;
+         
+            const pocketNo =
+            `${year}-${String(nextPocket).padStart(2,'0')}`;
+         
+            const newEntry = {
+               batchId,
+               totalCandidates: total,
+               presentCandidates: present,
+               assessmentDateISO: dateRaw,
+               pocketNo,
+               statusMap
+            };
+            if (editIdx >= 0 && editIdx < assessments.length) assessments[editIdx] = newEntry;
+            else assessments.push(newEntry);
+            dataChanged();
+            return true;
+         }
+         
+         let modal = document.getElementById('entryModal');
+         
+         function openModal() {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+               modal.style.visibility = 'visible';
+               modal.style.opacity = '1';
+            }, 10);
+         }
+         
+         function closeModal() {
+            modal.style.visibility = 'hidden';
+            modal.style.opacity = '0';
+            setTimeout(() => modal.classList.add('hidden'), 200);
+         }
+         
+         function openAddModal() {
+            resetModalForAdd();
+            openModal();
+         }
+         
+         function updateAbsentPreview() {
+            let t = parseInt(document.getElementById('totalCandidates')?.value) || 0;
+            let p = parseInt(document.getElementById('presentCandidates')?.value) || 0;
+            document.getElementById('liveAbsentPreview').innerText = Math.max(0, t - p);
+         }
+         document.getElementById('entryForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (saveBatchFromModal()) closeModal();
+         });
+         document.getElementById('totalCandidates')?.addEventListener('input', updateAbsentPreview);
+         document.getElementById('presentCandidates')?.addEventListener('input', updateAbsentPreview);
+         
+         // Excel Import with duplicate skip
+         function handleExcelImport(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+            let reader = new FileReader();
+            reader.onload = function (e) {
+               let data = new Uint8Array(e.target.result);
+               let workbook = XLSX.read(data, {
+                  type: 'array'
+               });
+               let sheet = workbook.Sheets[workbook.SheetNames[0]];
+               let rows = XLSX.utils.sheet_to_json(sheet, {
+                  defval: ""
+               });
+               let imported = 0,
+                  duplicatesSkipped = 0;
+               for (let row of rows) {
+                  let batchId = row['Batch ID'] || row['batchId'];
+                  let total = parseInt(row['Total Candidates'] || 0);
+                  let present = parseInt(row['Present Candidates'] || 0);
+                  let dateRaw = row['Assessment Date'] || '';
+                  if (!batchId || !dateRaw) continue;
+                  if (isDuplicateBatchId(batchId.toString())) {
+                     duplicatesSkipped++;
+                     continue;
+                  }
+                  let isoDate = toISODate(dateRaw);
+                  if (!isoDate) continue;
+                  let statusMap = {};
+                  for (let doc of ALL_DOCS) {
+                     let sVal = row[doc.label] || row[doc.id] || 'No';
+                     statusMap[doc.id] = (sVal.toString().toLowerCase() === 'yes' || sVal === 'Yes') ? 'Yes' : 'No';
+                     let remarkKey = doc.label + '_remark';
+                     let remarkVal = row[remarkKey] || row[doc.id + '_remark'] || '';
+                     statusMap[doc.id + '_remark'] = remarkVal;
+                  }
+                  const year =
+                  extractYearFromISO(isoDate);
+         
+                  const existingYearEntries =
+                  assessments.filter(a =>
+                  extractYearFromISO(a.assessmentDateISO) === year
+                  );
+         
+                  let nextPocket =
+                  existingYearEntries.length + 1;
+         
+                  const pocketNo =
+                  `${year}-${String(nextPocket).padStart(2,'0')}`;
+         
+                  assessments.push({
+                     batchId: batchId.toString(),
+                     totalCandidates: total,
+                     presentCandidates: present,
+                     assessmentDateISO: isoDate,
+                     pocketNo,
+                     statusMap
+                  });
+                  imported++;
+               }
+               dataChanged();
+               if (duplicatesSkipped) showToast(`Imported ${imported} batches, skipped ${duplicatesSkipped} duplicates.`);
+               else showToast(`Imported ${imported} batches.`);
+            };
+            reader.readAsArrayBuffer(file);
+            event.target.value = '';
+         }
+         
+         function downloadDemoImportFile() {
+            let demoRows = [{
+               "Batch ID": "DEMO001",
+               "Assessment Date": "2025-01-10",
+               "Total Candidates": 20,
+               "Present Candidates": 18,
+               "Attendance Sheet": "Yes",
+               "Attendance Sheet_remark": "Signed",
+               "Annexure M": "Yes",
+               "Assessor Declaration": "Yes",
+               "Declaration Form": "Yes",
+               "Checklist by Assessor": "Yes",
+               "Feedback Form for VTP": "Yes",
+               "TP Declaration form": "Yes",
+               "TP-TC Declaration Form": "No",
+               "TP-TC Declaration Form_remark": "Missing signature",
+               "Training feedback form by Assessor": "Yes",
+               "Candidate Feedback": "Yes",
+               "Placement Sheet": "Yes",
+               "Training Attendance Sheet": "Yes",
+               "Candidate Enrollment Form": "Yes",
+               "Annexure N": "No",
+               "Annexure N_remark": "Not applicable"
+            }];
+            let ws = XLSX.utils.json_to_sheet(demoRows);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Demo");
+            XLSX.writeFile(wb, "FICSI_Demo_Remarks.xlsx");
+         }
+         
+         function exportToExcel() {
+            let filtered = getFilteredAssessments();
+            let data = filtered.map(e => {
+               let row = {
+                  'Batch ID': e.batchId,
+                  'Total Candidates': e.totalCandidates,
+                  'Present Candidates': e.presentCandidates,
+                  'Absent': e.totalCandidates - e.presentCandidates,
+                  'Assessment Date': formatDisplayDate(e.assessmentDateISO)
+               };
+               for (let doc of ALL_DOCS) {
+                  row[doc.label] = e.statusMap[doc.id] || 'No';
+                  row[doc.label + '_remark'] = e.statusMap[doc.id + '_remark'] || '';
+               }
+               row['Outher'] = computeOutherList(e.statusMap).join(', ');
+               row['Missing'] = computeMissingList(e.statusMap).join(', ');
+               return row;
+            });
+            let ws = XLSX.utils.json_to_sheet(data);
+            let wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Report");
+            XLSX.writeFile(wb, `assessment_${Date.now()}.xlsx`);
+         }
+         async function exportToPDF() {
+            let {
+               jsPDF
+            } = window.jspdf;
+            let doc = new jsPDF({
+               orientation: 'landscape'
+            });
+            let filtered = getFilteredAssessments();
+            let body = filtered.map(e => [e.batchId, e.totalCandidates, e.presentCandidates, e.totalCandidates - e.presentCandidates, formatDisplayDate(e.assessmentDateISO), computeOutherList(e.statusMap).join(', '), computeMissingList(e.statusMap).join(', ')]);
+            doc.autoTable({
+               head: [
+                  ['Batch ID', 'Total', 'Present', 'Absent', 'Date', 'Outher', 'Missing']
+               ],
+               body,
+               styles: {
+                  fontSize: 8
+               }
+            });
+            doc.save('report.pdf');
+         }
+         
+         // Google Sheets functions (unchanged)
+         function showClientIdModal() {
+            let m = document.getElementById('clientIdModal');
+            m.classList.remove('hidden');
+            setTimeout(() => {
+               m.style.visibility = 'visible';
+               m.style.opacity = '1';
+            }, 10);
+         }
+         
+         function closeClientIdModal() {
+            let m = document.getElementById('clientIdModal');
+            m.style.visibility = 'hidden';
+            m.style.opacity = '0';
+            setTimeout(() => m.classList.add('hidden'), 200);
+         }
+         
+         function saveClientIdAndProceed() {
+            let newClientId = document.getElementById('clientIdInput').value.trim();
+            if (!newClientId) {
+               showToast("Enter Client ID");
+               return;
+            }
+            localStorage.setItem("ficsi_google_client_id", newClientId);
+            clientId = newClientId;
+            closeClientIdModal();
+            initGoogleSync();
+         }
+         
+         function showSyncStatus(show, msg) {
+            let bar = document.getElementById('googleSyncStatus');
+            if (show) {
+               bar.classList.remove('hidden');
+               document.getElementById('syncStatusMsg').innerText = msg || "Connected.";
+            } else bar.classList.add('hidden');
+         }
+         async function authenticateGoogle() {
+            if (!clientId) {
+               showClientIdModal();
+               return;
+            }
+            let tc = google.accounts.oauth2.initTokenClient({
+               client_id: clientId,
+               scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
+               callback: async (resp) => {
+                  if (resp.error) {
+                     showToast("Auth error: " + resp.error);
+                     return;
+                  }
+                  accessToken = resp.access_token;
+                  await loadFromGoogleSheet();
+                  await syncToGoogleSheet();
+               }
+            });
+            tc.requestAccessToken({
+               prompt: 'select_account'
+            });
+         }
+         
+         async function authenticateAndSyncExisting() {
+         
+            if (!clientId) {
+               showClientIdModal();
+               return;
+            }
+         
+            let tc = google.accounts.oauth2.initTokenClient({
+         
+               client_id: clientId,
+         
+               scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file",
+         
+               callback: async (resp) => {
+         
+                  if (resp.error) {
+                     showToast("❌ Auth error");
+                     return;
+                  }
+         
+                  accessToken = resp.access_token;
+         
+                  isGoogleReady = true;
+         
+                  showSyncStatus(true, "Connected.");
+         
+                  await loadFromGoogleSheet();
+         
+                  await syncToGoogleSheet();
+               }
+            });
+         
+            tc.requestAccessToken({
+               prompt: 'select_account'
+            });
+         }
+         async function syncToGoogleSheet() {
+            if (!spreadsheetId || !accessToken) return;
+            try {
+               let headerRow = ["Batch ID", "Total Candidates", "Present Candidates", "Assessment Date ISO"];
+               for (let doc of ALL_DOCS) {
+                  headerRow.push(doc.label, doc.label + "_remark");
+               }
+               let rows = [headerRow];
+               assessments.forEach(a => {
+                  let row = [a.batchId, a.totalCandidates, a.presentCandidates, a.assessmentDateISO];
+                  for (let doc of ALL_DOCS) {
+                     row.push(a.statusMap[doc.id] || "No", a.statusMap[doc.id + "_remark"] || "");
+                  }
+                  rows.push(row);
+               });
+               let url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:ZZ?valueInputOption=RAW`;
+               await fetch(url, {
+                  method: 'PUT',
+                  headers: {
+                     'Authorization': `Bearer ${accessToken}`,
+                     'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                     values: rows
+                  })
+               });
+               showToast("📤 Synced to Google Sheet");
+            } catch (e) {
+               console.warn(e);
+               showToast("Sync failed");
+            }
+         }
+         async function loadFromGoogleSheet() {
+            if (!spreadsheetId || !accessToken) return;
+            try {
+               let resp = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/Sheet1!A1:Z2000`, {
+                  headers: {
+                     'Authorization': `Bearer ${accessToken}`
+                  }
+               });
+               let data = await resp.json();
+               let rows = data.values;
+               if (!rows || rows.length < 2) return;
+               let headers = rows[0];
+               let idx = {
+                  batchId: headers.indexOf("Batch ID"),
+                  total: headers.indexOf("Total Candidates"),
+                  present: headers.indexOf("Present Candidates"),
+                  date: headers.indexOf("Assessment Date ISO")
+               };
+               if (idx.batchId === -1) return;
+               let loaded = [];
+               for (let i = 1; i < rows.length; i++) {
+                  let r = rows[i];
+                  if (!r[idx.batchId]) continue;
+                  let statusMap = {};
+                  for (let doc of ALL_DOCS) {
+                     let colStatus = headers.indexOf(doc.label);
+                     let colRemark = headers.indexOf(doc.label + "_remark");
+                     statusMap[doc.id] = (colStatus !== -1 && r[colStatus] && r[colStatus].toString().toLowerCase() === 'yes') ? 'Yes' : 'No';
+                     statusMap[doc.id + "_remark"] = (colRemark !== -1 && r[colRemark]) ? r[colRemark] : "";
+                  }
+                  loaded.push({
+                     batchId: r[idx.batchId],
+                     totalCandidates: parseInt(r[idx.total]) || 0,
+                     presentCandidates: parseInt(r[idx.present]) || 0,
+                     assessmentDateISO: r[idx.date] || "",
+                     statusMap
+                  });
+               }
+               if (loaded.length) {
+                  assessments = loaded;
+                  renderTable();
+                  showToast(`Loaded ${assessments.length} batches`);
+               }
+            } catch (e) {
+               console.warn(e);
+               showToast("Error loading sheet");
+            }
+         }
+         
+         function disconnectGoogleSheet() {
+            accessToken = null;
+            isGoogleReady = false;
+            showSyncStatus(false, "");
+            showToast("Disconnected.");
+         }
+         async function initGoogleSync() {
+            if (spreadsheetId) {
+               if (accessToken) {
+                  showSyncStatus(true, "Already connected.");
+                  await loadFromGoogleSheet();
+                  await syncToGoogleSheet();
+               } else {
+                  await authenticateAndSyncExisting();
+               }
+            } else {
+               await authenticateGoogle();
+            }
+         }
+         
+         function dataChanged() {
+            renderTable();
+            if (isGoogleReady && spreadsheetId && accessToken) syncToGoogleSheet();
+         }
+         
+         window.onload = () => {
+            renderTable();
+         };
+         window.initGoogleSync = initGoogleSync;
+         window.disconnectGoogleSheet = disconnectGoogleSheet;
+         window.editBatch = editBatch;
+         window.deleteBatch = deleteBatch;
+         window.openAddModal = openAddModal;
+         window.closeModal = closeModal;
+         window.applyYearFilter = applyYearFilter;
+         window.clearFilter = clearFilter;
+         window.applySearchFilter = applySearchFilter;
+         window.clearSearch = clearSearch;
+         window.handleExcelImport = handleExcelImport;
+         window.exportToExcel = exportToExcel;
+         window.exportToPDF = exportToPDF;
+         window.showIndexModal = showIndexModal;
+         window.closeIndexModal = closeIndexModal;
+         window.exportIndexToExcel = exportIndexToExcel;
+         window.exportIndexToPDF = exportIndexToPDF;
+         window.downloadDemoImportFile = downloadDemoImportFile;
+         window.saveClientIdAndProceed = saveClientIdAndProceed;
+         window.closeClientIdModal = closeClientIdModal;
+      </script>
+      <!-- REPORT GENERATOR MODAL -->
+      <div id="reportGeneratorModal"
+         class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-7xl max-h-[95vh] flex flex-col overflow-hidden">
+            <div class="p-5 border-b flex justify-between items-center">
+               <h2 class="text-xl font-bold">
+                  📑 Report Generator
+               </h2>
+               <button onclick="closeReportGenerator()" class="text-xl">
+               ✕
+               </button>
+            </div>
+            <div class="p-5 overflow-y-auto flex-1">
+               <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-5">
+                  <div>
+                     <label class="text-xs font-bold block mb-1">
+                     Year
+                     </label>
+                     <select id="reportYear"
+                        class="w-full border rounded-xl px-3 py-2 text-sm"
+                        onchange="renderBatchSelection();generateLivePreview();">
+                        <option value="">
+                           Select Year
+                        </option>
+                     </select>
+                  </div>
+                  <div>
+                     <label class="text-xs font-bold block mb-1">
+                     File Number
+                     </label>
+                     <input type="number"
+                        id="fileNumber"
+                        class="w-full border rounded-xl px-3 py-2 text-sm"
+                        placeholder="1"
+                        oninput="updatePocketPreview();renderBatchSelection();generateLivePreview();">
+                  </div>
+                  <div class="flex items-end">
+                     <label class="flex items-center gap-2 text-sm font-semibold">
+                     <input type="radio"
+                        name="reportType"
+                        value="index"
+                        checked
+                        onchange="generateLivePreview()">
+                     Index
+                     </label>
+                  </div>
+                  <div class="flex items-end">
+                     <label class="flex items-center gap-2 text-sm font-semibold">
+                     <input type="radio"
+                        name="reportType"
+                        value="summary"
+                        onchange="generateLivePreview()">
+                     Summary Report
+                     </label>
+                  </div>
+                  <div class="flex items-end">
+                     <div class="bg-slate-100 rounded-xl px-4 py-2 text-sm font-bold w-full text-center">
+                        File No.:
+                        <span id="pocketPreview">
+                        -
+                        </span>
+                     </div>
+                  </div>
+               </div>
+               <div class="flex justify-between items-center mb-3">
+                  <label class="flex items-center gap-2 text-sm font-semibold">
+                  <input type="checkbox"
+                     id="selectAllBatches"
+                     onchange="toggleAllBatches()">
+                  Select All
+                  </label>
+                  <div class="text-sm font-bold text-blue-700">
+                     Selected:
+                     <span id="selectedCount">
+                     0
+                     </span>
+                  </div>
+               </div>
+               <div class="border rounded-2xl overflow-hidden mb-5">
+                  <table class="w-full text-sm">
+                     <thead class="bg-slate-100">
+                        <tr>
+                           <th class="p-2 border">
+                              Select
+                           </th>
+                           <th class="p-2 border">
+                              Batch ID
+                           </th>
+                           <th class="p-2 border">
+                              Assessment Date
+                           </th>
+                           <th class="p-2 border">
+                              Pocket No.
+                           </th>
+                        </tr>
+                     </thead>
+                     <tbody id="batchSelectionTable">
+                     </tbody>
+                  </table>
+               </div>
+               <div>
+                  <h3 class="text-lg font-bold mb-3">
+                     📄 Live Preview
+                  </h3>
+                  <div id="livePreview"
+                     class="border rounded-2xl p-4 overflow-auto max-h-[400px] bg-slate-50">
+                     No preview
+                  </div>
+               </div>
+            </div>
+            <div class="p-4 border-t flex flex-wrap justify-end gap-3">
+               <button onclick="printGeneratedReport()"
+                  class="px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white rounded-xl font-semibold">
+               🖨 Print
+               </button>
+               <button onclick="exportGeneratedExcel()"
+                  class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold">
+               📗 Excel
+               </button>
+               <button onclick="exportGeneratedPDF()"
+                  class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold">
+               📕 PDF
+               </button>
+            </div>
+         </div>
+      </div>
+   </body>
 </html>
